@@ -1,0 +1,113 @@
+<style>
+.sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    background-color: var(--bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px;
+
+    position: fixed;
+    top: 88px;
+    left: calc(50vw - 544px);
+
+    height: calc(100vh - 112px);
+    z-index: 1040;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px var(--card-border);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    position: relative;
+    z-index: 2;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+.sidebar-item:hover {
+    background-color: var(--primary-soft);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.sidebar-item i {
+    font-size: 20px;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.sidebar-tag {
+    position: absolute;
+    width: 150px;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.tag-1 {
+    top: 435px;
+    right: -20px;
+    opacity: 1.0;
+}
+
+.tag-2 {
+    top: 370px;
+    left: -30px;
+    opacity: 1.0;
+}
+
+.tag-3 {
+    bottom: 470px;
+    left: 90%;
+    transform: translateX(-50%);
+    opacity: 1.0;
+}
+
+@media (max-width: 992px) {
+    .sidebar {
+        display: none;
+    }
+}
+</style>
+
+<aside class="sidebar">
+    <ul class="sidebar-nav">
+        {% for item in SIDEBAR_MENU %}
+        <li>
+            <a href="{{ item.url }}" class="sidebar-item">
+                <i class="{{ item.icon }}"></i>
+                <span>{{ item.title }}</span>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag1.png') }}" class="sidebar-tag tag-1 theme-dependent-img" data-img-name="tag1.png" alt="">
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag2.png') }}" class="sidebar-tag tag-2 theme-dependent-img" data-img-name="tag2.png" alt="">
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag3.png') }}" class="sidebar-tag tag-3 theme-dependent-img" data-img-name="tag3.png" alt="">
+</aside>

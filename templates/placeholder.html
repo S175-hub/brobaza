@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>В разработке</title>
+
+    <style>
+    :root {
+        --primary: {{ THEME.primary }};
+        --primary-soft: {{ THEME.primary_soft }};
+        --text: {{ THEME.text }};
+        --text-soft: {{ THEME.text_soft }};
+        --bg: {{ THEME.bg }};
+        --card-border: {{ THEME.card_border }};
+    }
+
+    body {
+        margin: 0;
+        background-color: var(--bg);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .wip-code {
+        font-size: 120px;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+        margin: 0;
+        letter-spacing: -4px;
+    }
+
+    .wip-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text);
+        margin: 16px 0 0 0;
+    }
+
+    .wip-description {
+        font-size: 15px;
+        color: var(--text-soft);
+        margin: 12px 0 0 0;
+        max-width: 400px;
+        line-height: 1.5;
+    }
+
+    .btn-home {
+        display: inline-block;
+        margin-top: 32px;
+        padding: 12px 28px;
+        border-radius: 999px;
+        background-color: var(--primary);
+        color: var(--bg);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+        border: none;
+        transition: background-color 200ms ease, color 200ms ease, transform 120ms ease;
+    }
+
+    .btn-home:hover {
+        background-color: var(--primary-soft);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .btn-home:active {
+        transform: scale(0.97);
+    }
+    </style>
+</head>
+<body>
+
+<div>
+    <h1 class="wip-code">WIP</h1>
+    <h3 class="wip-title">Раздел пока в разработке</h3>
+    <p class="wip-description">Мы уже работаем над этим — скоро всё будет доступно</p>
+    <a href="/" class="btn-home">На главную</a>
+</div>
+
+</body>
+</html>

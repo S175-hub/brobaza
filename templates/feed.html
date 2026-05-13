@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary: {{ THEME.primary }};
+        --primary-soft: {{ THEME.primary_soft }};
+        --text: {{ THEME.text }};
+        --text-soft: {{ THEME.text_soft }};
+        --like: {{ THEME.like }};
+        --like-soft: {{ THEME.like_soft }};
+        --delete: {{ THEME.delete }};
+        --delete-soft: {{ THEME.delete_soft }};
+        --bg: {{ THEME.bg }};
+        --card-border: {{ THEME.card_border }};
+        --card-hover: {{ THEME.card_hover }};
+        --errors: {{ THEME.errors }};
+    }
+
+    body {
+        background-color: var(--bg);
+    }
+
+    .feed-layout {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .feed-card {
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: var(--bg);
+        transition: background-color 200ms ease;
+    }
+
+    .feed-card:hover {
+        background-color: var(--card-hover);
+    }
+
+    .feed-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .feed-card-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .feed-card-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .feed-card-nickname {
+        text-decoration: none;
+        color: var(--text);
+        transition: color 200ms ease;
+    }
+
+    .feed-card-nickname:hover {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .feed-card-date {
+        font-size: 12px;
+        color: var(--text-soft);
+    }
+
+    .feed-menu-wrap {
+        position: relative;
+    }
+
+    .feed-menu-btn {
+        border: none;
+        background: none;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--text-soft);
+        padding: 6px 10px;
+        border-radius: 8px;
+        transition: background-color 200ms ease, color 200ms ease;
+        outline: none;
+        box-shadow: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .feed-menu-btn:hover {
+        color: var(--primary);
+        background-color: var(--primary-soft);
+    }
+
+    .feed-menu-btn:focus,
+    .feed-menu-btn:focus-visible,
+    .feed-menu-btn:active {
+        outline: none;
+        box-shadow: none;
+        color: var(--primary);
+        background-color: var(--primary-soft);
+    }
+
+    .feed-menu-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 34px;
+        background-color: var(--bg);
+        border: 1px solid var(--card-border);
+        border-radius: 10px;
+        min-width: 140px;
+        z-index: 100;
+        overflow: hidden;
+    }
+
+    .feed-menu-delete {
+        display: block;
+        padding: 10px 14px;
+        color: var(--delete) !important;
+        text-decoration: none;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .feed-menu-delete:visited {
+        color: var(--delete) !important;
+    }
+
+    .feed-menu-delete:hover,
+    .feed-menu-delete:active,
+    .feed-menu-delete:focus,
+    .feed-menu-delete:focus-visible {
+        background-color: var(--delete-soft);
+        color: var(--delete) !important;
+        text-decoration: none;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .feed-card-text {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        color: var(--text);
+    }
+
+    .feed-card-image {
+        width: 100%;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+
+    .feed-like {
+        text-decoration: none !important;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        margin-left: -8px;
+        margin-top: 10px;
+        border-radius: 999px;
+        border: none;
+        background: none;
+        color: var(--text-soft) !important;
+        transition: background-color 200ms ease, color 200ms ease;
+        cursor: pointer;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .feed-like:visited {
+        color: var(--text-soft) !important;
+    }
+
+    .feed-like i {
+        font-size: 18px;
+        line-height: 1;
+        transition: color 200ms ease, transform 150ms ease;
+    }
+
+    .feed-like-count {
+        color: var(--text-soft) !important;
+        font-size: 14px;
+        transition: color 200ms ease;
+        line-height: 1;
+    }
+
+    .feed-like:hover {
+        background-color: var(--like-soft);
+        text-decoration: none !important;
+        color: var(--like) !important;
+    }
+
+    .feed-like:hover .feed-like-count {
+        color: var(--like) !important;
+    }
+
+    .feed-like:focus,
+    .feed-like:focus-visible,
+    .feed-like:active {
+        outline: none;
+        box-shadow: none;
+        background-color: var(--like-soft);
+        color: var(--like) !important;
+    }
+
+    .feed-like:focus .feed-like-count,
+    .feed-like:focus-visible .feed-like-count,
+    .feed-like:active .feed-like-count {
+        color: var(--like) !important;
+    }
+
+    .feed-like.is-liked {
+        color: var(--like) !important;
+    }
+
+    .feed-like.is-liked .feed-like-count {
+        color: var(--like) !important;
+    }
+
+    .feed-like.is-liked:hover,
+    .feed-like.is-liked:focus,
+    .feed-like.is-liked:active {
+        background-color: var(--like-soft);
+        color: var(--like) !important;
+    }
+
+    .feed-like.is-liked:hover .feed-like-count,
+    .feed-like.is-liked:focus .feed-like-count,
+    .feed-like.is-liked:active .feed-like-count {
+        color: var(--like) !important;
+    }
+
+    .feed-empty {
+        text-align: center;
+        color: var(--text-soft);
+    }
+</style>
+
+<div class="feed-layout">
+
+    {% include "add_post.html" %}
+
+    {% for post in posts %}
+    <div class="feed-card">
+
+        <div class="feed-card-header">
+
+            <div class="feed-card-author">
+
+                <img src="{{ url_for('static', filename=post.author.avatar) }}"
+                     class="feed-card-avatar">
+
+                <div>
+
+                    <a href="{{ url_for('profile.user_profile', username=post.author.username) }}"
+                       class="feed-card-nickname">
+
+                        <strong>{{ post.author.nickname }}</strong>
+
+                    </a>
+
+                    <div class="feed-card-date">
+                        {{ post.pretty_date }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if current_user.is_authenticated and post.author_id == current_user.id %}
+
+            <div class="feed-menu-wrap">
+
+                <button onclick="toggleMenu(event, {{ post.id }})"
+                        class="feed-menu-btn">
+                    ⋯
+                </button>
+
+                <div id="menu-{{ post.id }}"
+                     class="feed-menu-dropdown">
+
+                    <a href="{{ url_for('post.post_delete', post_id=post.id, next=request.path) }}"
+                       class="feed-menu-delete"
+                       style="color: {{ THEME.delete }};">
+                        Удалить
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% if post.text %}
+        <p class="feed-card-text">
+            {{ post.text }}
+        </p>
+        {% endif %}
+
+        {% if post.image %}
+        <img src="{{ url_for('static', filename=post.image) }}"
+             class="feed-card-image">
+        {% endif %}
+
+        <button type="button"
+           onclick="likePost({{ post.id }}, this)"
+           class="feed-like {% if post.id in liked_post_ids %}is-liked{% endif %}">
+
+            {% if post.id in liked_post_ids %}
+                {{ LIKE_ICON_FILLED | safe }}
+            {% else %}
+                {{ LIKE_ICON_EMPTY | safe }}
+            {% endif %}
+
+            <span class="feed-like-count">
+                {{ post.like_count }}
+            </span>
+
+        </button>
+
+    </div>
+
+    {% else %}
+
+    <p class="feed-empty">
+        Постов пока нет
+    </p>
+
+    {% endfor %}
+
+</div>
+
+<script>
+    function toggleMenu(e, id) {
+        e.stopPropagation();
+
+        const menu = document.getElementById("menu-" + id);
+
+        if (!menu) return;
+
+        menu.style.display =
+            menu.style.display === "block"
+                ? "none"
+                : "block";
+    }
+
+    document.addEventListener("click", function (e) {
+        document.querySelectorAll("[id^='menu-']").forEach(menu => {
+            menu.style.display = "none";
+        });
+    });
+</script>
+
+{% endblock %}

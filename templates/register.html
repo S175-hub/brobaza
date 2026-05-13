@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Регистрация</title>
+
+    <style>
+    :root {
+        --primary: {{ THEME.primary }};
+        --primary-soft: {{ THEME.primary_soft }};
+        --text: {{ THEME.text }};
+        --text-soft: {{ THEME.text_soft }};
+        --bg: {{ THEME.bg }};
+        --card-border: {{ THEME.card_border }};
+        --errors: {{ THEME.errors }};
+    }
+
+    body {
+        background-color: var(--bg);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        color: var(--text);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 420px;
+        background-color: var(--bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 36px 32px;
+        box-shadow: 0 4px 12px var(--card-border);
+
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 28px 0;
+        color: var(--text);
+        position: relative;
+        z-index: 2;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: var(--text);
+    }
+
+    .required-asterisk {
+        color: var(--errors);
+        font-size: 14px;
+        margin-left: 2px;
+    }
+
+    .register-form input[type="email"],
+    .register-form input[type="password"],
+    .register-form input[type="text"],
+    .register-form input[type="submit"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .register-form input[type="email"],
+    .register-form input[type="password"],
+    .register-form input[type="text"] {
+        padding: 12px 14px;
+        background-color: var(--bg);
+        border: 1.5px solid var(--card-border);
+        border-radius: 12px;
+        color: var(--text);
+        font-size: 15px;
+        outline: none;
+        transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .register-form input::placeholder {
+        color: var(--text-soft);
+    }
+
+    .register-form input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .form-error {
+        color: var(--errors);
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    .form-actions {
+        margin-top: 32px;
+    }
+
+    .btn-primary {
+        border: none;
+        padding: 12px 20px;
+        border-radius: 999px;
+        background-color: var(--primary);
+        color: var(--bg);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: box-shadow 200ms ease, transform 120ms ease;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .btn-primary:active {
+        transform: scale(0.98);
+    }
+
+    .auth-nav {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 14px;
+        color: var(--text-soft);
+        position: relative;
+        z-index: 2;
+    }
+
+    .auth-nav a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 200ms ease;
+    }
+
+    .auth-nav a:hover {
+        opacity: 0.8;
+    }
+
+    .register-form {
+        position: relative;
+        z-index: 2;
+    }
+
+    .card-tag {
+        position: absolute;
+        width: 150px;
+        height: auto;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .tag-1 {
+        top: 10px;
+        right: -20px;
+        opacity: 0.5;
+    }
+
+    .tag-2 {
+        bottom: 105px;
+        left: -35px;
+        opacity: 0.4;
+    }
+
+    .tag-3 {
+        bottom: -25px;
+        right: 50px;
+        opacity: 0.3;
+    }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <h2 class="register-title">Регистрация</h2>
+
+    <form method="post" class="register-form" autocomplete="off">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            <label for="email">
+                {{ form.email.label.text }}
+                <span class="required-asterisk">*</span>
+            </label>
+            {{ form.email(placeholder="Ваш email", autocomplete="off") }}
+            {% for error in form.email.errors %}
+            <div class="form-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="password">
+                {{ form.password.label.text }}
+                <span class="required-asterisk">*</span>
+            </label>
+            {{ form.password(placeholder="Пароль", autocomplete="new-password") }}
+            {% for error in form.password.errors %}
+            <div class="form-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-group">
+            <label for="confirm_password">
+                {{ form.confirm_password.label.text }}
+                <span class="required-asterisk">*</span>
+            </label>
+            {{ form.confirm_password(placeholder="Повторите пароль", autocomplete="new-password") }}
+            {% for error in form.confirm_password.errors %}
+            <div class="form-error">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="form-actions">
+            {{ form.submit(class="btn-primary") }}
+        </div>
+    </form>
+
+    <div class="auth-nav">
+        У вас уже есть аккаунт? <a href="{{ url_for('login.login') }}">Войти</a>
+    </div>
+
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag1.png') }}" class="card-tag tag-1 theme-dependent-img" data-img-name="tag1.png" alt="">
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag2.png') }}" class="card-tag tag-2 theme-dependent-img" data-img-name="tag2.png" alt="">
+    <img src="{{ url_for('static', filename='img/' + THEME_NAME + '/tag3.png') }}" class="card-tag tag-3 theme-dependent-img" data-img-name="tag3.png" alt="">
+</div>
+
+</body>
+</html>
