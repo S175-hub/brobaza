@@ -12,7 +12,7 @@ class ProfileSetupForm(FlaskForm):
     username = StringField('Имя пользователя',
                            validators=[
                                DataRequired(message='Поле должно быть заполнено'),
-                               Length(min=4, max=20, message='Имя пользователя должно содержать от 5 до 20 символов'),
+                               Length(min=5, max=20, message='Имя пользователя должно содержать от 5 до 20 символов'),
                                Regexp(regex=r'^[a-zA-Z0-9_]+$',
                                       message='Имя пользователя может содержать только латинские буквы, цифры и нижнее подчеркивание')
                            ])
