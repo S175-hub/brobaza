@@ -1,3 +1,5 @@
 /.venv
 .env
 data/database.db
+static/avatars
+static/posts
