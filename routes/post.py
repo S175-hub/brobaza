@@ -1,5 +1,5 @@
 import os.path
-from flask import Blueprint, redirect, abort, request
+from flask import Blueprint, redirect, abort, request, current_app
 from flask_login import current_user, login_required
 from data import db_session
 from data.posts import Posts
@@ -7,7 +7,7 @@ from data.posts import Posts
 post_bp = Blueprint('post', __name__)
 
 
-@post_bp.route('/post/delete/<int:post_id>')
+@post_bp.route('/post/delete/<int:post_id>', methods=['POST'])
 @login_required
 def post_delete(post_id):
     db_sess = db_session.create_session()
@@ -18,11 +18,11 @@ def post_delete(post_id):
         if not post:
             abort(404)
 
-        if post.author_id != current_user.id:
+        if not (post.author_id == current_user.id or current_user.role in ('admin', 'moderator')):
             abort(403)
 
         if post.image:
-            file_path = os.path.join('static', post.image)
+            file_path = os.path.join(current_app.root_path, 'static', post.image)
             if os.path.exists(file_path):
                 try:
                     os.remove(file_path)
