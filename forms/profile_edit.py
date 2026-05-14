@@ -1,7 +1,17 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed
 from wtforms import StringField, FileField, SubmitField
-from wtforms.validators import Length, Regexp
+from wtforms.validators import Length, Regexp, ValidationError
+from flask_login import current_user
+
+
+def custom_length_check(form, field):
+    if current_user.is_authenticated and current_user.role == 'admin':
+        if len(field.data) < 3:
+            raise ValidationError('Username администратора может содержать от 3 до 20 символов')
+    else:
+        if len(field.data) < 5:
+            raise ValidationError('Username пользователя может содержать от 5 символов')
 
 
 class ProfileEditForm(FlaskForm):
@@ -9,11 +19,11 @@ class ProfileEditForm(FlaskForm):
                        validators=[
                            FileAllowed(['jpg', 'png', 'jpeg'], message='Недопустимый формат файла')
                        ])
-    username = StringField('Имя пользователя',
+    username = StringField('Username пользователя',
                            validators=[
-                               Length(min=4, max=20, message='Имя пользователя должно содержать от 5 до 20 символов'),
+                               custom_length_check,
                                Regexp(regex=r'^[a-zA-Z0-9_]+$',
-                                      message='Имя пользователя может содержать только латинские буквы, цифры и нижнее подчеркивание')
+                                      message='Username пользователя может содержать только латинские буквы, цифры и нижнее подчеркивание')
                            ])
     nickname = StringField('Отображаемое имя',
                            validators=[

@@ -9,12 +9,13 @@ class ProfileSetupForm(FlaskForm):
                        validators=[
                            FileAllowed(['jpg', 'png', 'jpeg'], message='Недопустимый формат файла')
                        ])
-    username = StringField('Имя пользователя',
+    username = StringField('Username пользователя',
                            validators=[
                                DataRequired(message='Поле должно быть заполнено'),
-                               Length(min=5, max=20, message='Имя пользователя должно содержать от 5 до 20 символов'),
+                               Length(min=5, max=20,
+                                      message='Username пользователя может содержать от 5 до 20 символов'),
                                Regexp(regex=r'^[a-zA-Z0-9_]+$',
-                                      message='Имя пользователя может содержать только латинские буквы, цифры и нижнее подчеркивание')
+                                      message='Username пользователя может содержать только латинские буквы, цифры и нижнее подчеркивание')
                            ])
     nickname = StringField('Отображаемое имя',
                            validators=[
