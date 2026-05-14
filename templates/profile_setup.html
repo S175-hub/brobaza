@@ -69,6 +69,12 @@
         color: var(--text);
     }
 
+    .required-asterisk {
+        color: var(--errors);
+        font-size: 14px;
+        margin-left: 2px;
+    }
+
     .settings-form input[type="text"],
     .settings-form input[type="email"],
     .settings-form input[type="password"],
@@ -300,7 +306,10 @@
             </div>
 
             <div class="form-group">
-                {{ form.username.label }}
+                <label for="username">
+                    {{ form.username.label.text }}
+                    <span class="required-asterisk">*</span>
+                </label>
                 {{ form.username(placeholder="Имя пользователя", autocomplete="off") }}
                 {% for error in form.username.errors %}
                 <div class="form-error">{{ error }}</div>
@@ -308,7 +317,10 @@
             </div>
 
             <div class="form-group">
-                {{ form.nickname.label }}
+                <label for="nickname">
+                    {{ form.nickname.label.text }}
+                    <span class="required-asterisk">*</span>
+                </label>
                 {{ form.nickname(placeholder="Отображаемое имя") }}
                 {% for error in form.nickname.errors %}
                 <div class="form-error">{{ error }}</div>

@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Brobaza</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           crossorigin="anonymous">
@@ -10,220 +12,220 @@
     <title>{{ title }}</title>
 
     <style>
-    :root {
-        --primary: {{ THEME.primary }};
-        --primary-soft: {{ THEME.primary_soft }};
-        --text: {{ THEME.text }};
-        --text-soft: {{ THEME.text_soft }};
-        --like: {{ THEME.like }};
-        --like-soft: {{ THEME.like_soft }};
-        --delete: {{ THEME.delete }};
-        --delete-soft: {{ THEME.delete_soft }};
-        --bg: {{ THEME.bg }};
-        --card-border: {{ THEME.card_border }};
-        --card-hover: {{ THEME.card_hover }};
-    }
-
-    body {
-        background-color: var(--bg);
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        margin: 0;
-        padding: 0;
-    }
-
-    *:focus {
-        outline: none;
-    }
-
-    a:focus-visible, button:focus-visible {
-        outline: 2px solid var(--primary-soft);
-        outline-offset: 2px;
-    }
-
-    .navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1050;
-
-        background-color: color-mix(in srgb, var(--bg) 78%, transparent) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-
-        border-bottom: 1px solid var(--card-border);
-        padding: 0 24px;
-        height: 75px;
-        box-shadow: none;
-
-        display: flex;
-        align-items: center;
-    }
-
-    .navbar-brand {
-        color: var(--primary) !important;
-        font-size: 1.6rem !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.3px;
-        text-decoration: none !important;
-        transition: none !important;
-        display: flex;
-        align-items: center;
-        padding: 0;
-        margin: 0;
-    }
-
-    .navbar-brand:hover,
-    .navbar-brand:active,
-    .navbar-brand:focus {
-        color: var(--primary) !important;
-        text-decoration: none !important;
-    }
-
-    .navbar-brand img {
-        height: 80px;
-        max-height: 100%;
-        width: auto;
-        display: block;
-        object-fit: contain;
-    }
-
-    .app-layout {
-        max-width: 600px;
-        margin: 88px auto 0 auto;
-        padding-left: 16px;
-        padding-right: 16px;
-        padding-bottom: 40px;
-        box-sizing: border-box;
-    }
-
-    .main-content {
-        width: 100%;
-        max-width: 600px;
-        min-width: 0;
-    }
-
-    .nav-pill-btn {
-        text-decoration: none !important;
-        color: var(--text) !important;
-        font-size: 14px;
-        font-weight: 600;
-        padding: 8px 20px;
-        border-radius: 999px;
-        border: 1.5px solid var(--card-border);
-        background-color: color-mix(in srgb, var(--bg) 50%, transparent);
-        display: inline-flex;
-        align-items: center;
-        transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
-    }
-
-    .nav-pill-btn:hover {
-        background-color: var(--primary-soft);
-        border-color: var(--primary-soft);
-        color: var(--primary) !important;
-        text-decoration: none !important;
-    }
-
-    .nav-pill-btn:active {
-        background-color: var(--primary);
-        border-color: var(--primary);
-        color: var(--bg) !important;
-    }
-
-    .nav-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 8px;
-        border: 1px solid var(--card-border);
-    }
-
-    .dropdown-toggle::after {
-        border-top-color: var(--text-soft) !important;
-        margin-left: 8px;
-    }
-
-    .nav-pill-btn:hover .dropdown-toggle::after,
-    .nav-pill-btn:hover::after {
-        border-top-color: var(--primary) !important;
-    }
-
-    .dropdown-menu {
-        background-color: color-mix(in srgb, var(--bg) 85%, transparent) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-
-        border: 1px solid var(--card-border) !important;
-        border-radius: 12px !important;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.05) !important;
-        padding: 8px !important;
-        min-width: 160px;
-        margin-top: 8px !important;
-    }
-
-    .dropdown-item {
-        border-radius: 8px;
-        color: var(--text) !important;
-        font-size: 14px;
-        font-weight: 500;
-        padding: 8px 12px !important;
-        transition: background-color 200ms ease, color 200ms ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dropdown-item:hover,
-    .dropdown-item:focus {
-        background-color: var(--primary-soft) !important;
-        color: var(--primary) !important;
-    }
-
-    .dropdown-item-danger:hover,
-    .dropdown-item-danger:focus {
-        background-color: var(--delete-soft) !important;
-        color: var(--delete) !important;
-    }
-
-    .dropdown-divider {
-        border-top: 1px solid var(--card-border) !important;
-        margin: 6px 0 !important;
-    }
-
-    .theme-toggle-btn-guest {
-        text-decoration: none !important;
-        color: var(--text) !important;
-        font-size: 18px;
-        padding: 8px 10px;
-        border-radius: 999px;
-        border: none !important;
-        background-color: transparent;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background-color 200ms ease, color 200ms ease;
-        margin-right: 10px;
-    }
-
-    .theme-toggle-btn-guest:hover,
-    .theme-toggle-btn-guest:focus,
-    .theme-toggle-btn-guest:active {
-        background-color: var(--primary-soft);
-        color: var(--primary) !important;
-        text-decoration: none !important;
-        border: none !important;
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-    @media (max-width: 992px) {
-        .app-layout {
-            margin-left: 0;
-            justify-content: center;
+        :root {
+            --primary: {{ THEME.primary }};
+            --primary-soft: {{ THEME.primary_soft }};
+            --text: {{ THEME.text }};
+            --text-soft: {{ THEME.text_soft }};
+            --like: {{ THEME.like }};
+            --like-soft: {{ THEME.like_soft }};
+            --delete: {{ THEME.delete }};
+            --delete-soft: {{ THEME.delete_soft }};
+            --bg: {{ THEME.bg }};
+            --card-border: {{ THEME.card_border }};
+            --card-hover: {{ THEME.card_hover }};
         }
-    }
+
+        body {
+            background-color: var(--bg);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        *:focus {
+            outline: none;
+        }
+
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--primary-soft);
+            outline-offset: 2px;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1050;
+
+            background-color: color-mix(in srgb, var(--bg) 78%, transparent) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border-bottom: 1px solid var(--card-border);
+            padding: 0 24px;
+            height: 75px;
+            box-shadow: none;
+
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: var(--primary) !important;
+            font-size: 1.6rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.3px;
+            text-decoration: none !important;
+            transition: none !important;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar-brand:hover,
+        .navbar-brand:active,
+        .navbar-brand:focus {
+            color: var(--primary) !important;
+            text-decoration: none !important;
+        }
+
+        .navbar-brand img {
+            height: 80px;
+            max-height: 100%;
+            width: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .app-layout {
+            max-width: 600px;
+            margin: 88px auto 0 auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-bottom: 40px;
+            box-sizing: border-box;
+        }
+
+        .main-content {
+            width: 100%;
+            max-width: 600px;
+            min-width: 0;
+        }
+
+        .nav-pill-btn {
+            text-decoration: none !important;
+            color: var(--text) !important;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 999px;
+            border: 1.5px solid var(--card-border);
+            background-color: color-mix(in srgb, var(--bg) 50%, transparent);
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+        }
+
+        .nav-pill-btn:hover {
+            background-color: var(--primary-soft);
+            border-color: var(--primary-soft);
+            color: var(--primary) !important;
+            text-decoration: none !important;
+        }
+
+        .nav-pill-btn:active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg) !important;
+        }
+
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .dropdown-toggle::after {
+            border-top-color: var(--text-soft) !important;
+            margin-left: 8px;
+        }
+
+        .nav-pill-btn:hover .dropdown-toggle::after,
+        .nav-pill-btn:hover::after {
+            border-top-color: var(--primary) !important;
+        }
+
+        .dropdown-menu {
+            background-color: color-mix(in srgb, var(--bg) 85%, transparent) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid var(--card-border) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05) !important;
+            padding: 8px !important;
+            min-width: 160px;
+            margin-top: 8px !important;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            color: var(--text) !important;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 12px !important;
+            transition: background-color 200ms ease, color 200ms ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: var(--primary-soft) !important;
+            color: var(--primary) !important;
+        }
+
+        .dropdown-item-danger:hover,
+        .dropdown-item-danger:focus {
+            background-color: var(--delete-soft) !important;
+            color: var(--delete) !important;
+        }
+
+        .dropdown-divider {
+            border-top: 1px solid var(--card-border) !important;
+            margin: 6px 0 !important;
+        }
+
+        .theme-toggle-btn-guest {
+            text-decoration: none !important;
+            color: var(--text) !important;
+            font-size: 18px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: none !important;
+            background-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 200ms ease, color 200ms ease;
+            margin-right: 10px;
+        }
+
+        .theme-toggle-btn-guest:hover,
+        .theme-toggle-btn-guest:focus,
+        .theme-toggle-btn-guest:active {
+            background-color: var(--primary-soft);
+            color: var(--primary) !important;
+            text-decoration: none !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        @media (max-width: 992px) {
+            .app-layout {
+                margin-left: 0;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -267,9 +269,9 @@
 
                     <a class="dropdown-item" href="#" onclick="switchTheme(event)" id="theme-toggle-btn">
                         {% if THEME_NAME == 'light' %}
-                            <i class="bi bi-sun"></i> Светлая
+                        <i class="bi bi-sun"></i> Светлая
                         {% else %}
-                            <i class="bi bi-moon"></i> Тёмная
+                        <i class="bi bi-moon"></i> Тёмная
                         {% endif %}
                     </a>
 
@@ -283,11 +285,12 @@
 
             {% else %}
 
-            <button type="button" onclick="switchTheme(event)" id="guest-theme-toggle-btn" class="theme-toggle-btn-guest" title="Сменить тему">
+            <button type="button" onclick="switchTheme(event)" id="guest-theme-toggle-btn"
+                    class="theme-toggle-btn-guest" title="Сменить тему">
                 {% if THEME_NAME == 'light' %}
-                    <i class="bi bi-sun"></i>
+                <i class="bi bi-sun"></i>
                 {% else %}
-                    <i class="bi bi-moon"></i>
+                <i class="bi bi-moon"></i>
                 {% endif %}
             </button>
 
