@@ -7,7 +7,7 @@ from data.posts import Posts
 post_bp = Blueprint('post', __name__)
 
 
-@post_bp.route('/post/delete/<int:post_id>', methods=['POST'])
+@post_bp.route('/post/delete/<int:post_id>', methods=['GET', 'POST'])
 @login_required
 def post_delete(post_id):
     db_sess = db_session.create_session()

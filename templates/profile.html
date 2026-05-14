@@ -570,7 +570,7 @@ body {
 
         {% if post.text %}
         <p class="feed-card-text">
-            {{ post.text }}
+            {{ post.text | safe }}
         </p>
         {% endif %}
 
