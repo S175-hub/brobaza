@@ -316,9 +316,35 @@ body {
     background-color: var(--bg);
     border: 1px solid var(--card-border);
     border-radius: 10px;
-    min-width: 140px;
+    min-width: 160px;
     z-index: 100;
     overflow: hidden;
+}
+
+.feed-menu-edit {
+    display: block;
+    padding: 10px 14px;
+    color: var(--text) !important;
+    text-decoration: none;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+.feed-menu-edit:visited {
+    color: var(--text) !important;
+}
+
+.feed-menu-edit:hover,
+.feed-menu-edit:active,
+.feed-menu-edit:focus,
+.feed-menu-edit:focus-visible {
+    background-color: var(--primary-soft);
+    color: var(--primary) !important;
+    text-decoration: none;
+    outline: none;
+    box-shadow: none;
 }
 
 .feed-menu-delete {
@@ -542,11 +568,11 @@ body {
 
             </div>
 
-            {% if current_user.is_authenticated and post.author_id == current_user.id %}
+            {% if current_user.is_authenticated and (post.author_id == current_user.id or current_user.role in ('admin', 'moderator')) %}
 
             <div class="feed-menu-wrap">
 
-                <button onclick="toggleMenu(event, {{ post.id }})"
+                <button onclick="toggleMenu(event, {{ post.id }}"
                         class="feed-menu-btn">
                     ⋯
                 </button>
@@ -554,11 +580,20 @@ body {
                 <div id="menu-{{ post.id }}"
                      class="feed-menu-dropdown">
 
+                    {% if post.author_id == current_user.id %}
+                    <a href="{{ url_for('post.post_edit', post_id=post.id, next=request.path) }}"
+                       class="feed-menu-edit">
+                        Редактировать
+                    </a>
+                    {% endif %}
+
+                    {% if post.author_id == current_user.id or current_user.role in ('admin', 'moderator') %}
                     <a href="{{ url_for('post.post_delete', post_id=post.id, next=request.path) }}"
                        class="feed-menu-delete"
                        style="color: {{ THEME.delete }};">
                         Удалить
                     </a>
+                    {% endif %}
 
                 </div>
 
@@ -579,8 +614,8 @@ body {
              class="feed-card-image">
         {% endif %}
 
-        <a href="#"
-           onclick="likePost({{ post.id }}, this); return false;"
+        <button type="button"
+           onclick="likePost({{ post.id }}, this)"
            class="feed-like {% if post.id in liked_post_ids %}is-liked{% endif %}">
 
             {% if post.id in liked_post_ids %}
@@ -593,7 +628,7 @@ body {
                 {{ post.like_count }}
             </span>
 
-        </a>
+        </button>
 
     </div>
 

@@ -1,0 +1,324 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    .feed-create {
+        border: 1px solid var(--card-border);
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        background-color: var(--bg);
+    }
+
+    .feed-create textarea {
+        width: 100%;
+        border: 1px solid var(--card-border);
+        outline: none;
+        resize: none;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--text);
+        background-color: var(--bg);
+        box-sizing: border-box;
+        transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .feed-create textarea::placeholder {
+        color: var(--text-soft);
+    }
+
+    .feed-create textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .feed-create-error {
+        color: var(--errors);
+        margin-top: 5px;
+        font-size: 13px;
+    }
+
+    .feed-create-actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .feed-create-left-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .icon-action-btn {
+        border: none;
+        background: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--text-soft);
+        padding: 6px 8px;
+        border-radius: 8px;
+        transition: background-color 200ms ease, color 200ms ease;
+        line-height: 1;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .icon-action-btn:hover {
+        background-color: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    .icon-action-btn:focus,
+    .icon-action-btn:focus-visible,
+    .icon-action-btn:active {
+        outline: none;
+        box-shadow: none;
+        background-color: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    .feed-create-file {
+        display: none;
+    }
+
+    .image-preview-container {
+        display: none;
+        position: relative;
+        margin-top: 12px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--card-border);
+    }
+
+    .image-preview-container img {
+        width: 100%;
+        display: block;
+    }
+
+    .image-preview-remove {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: none;
+        background-color: color-mix(in srgb, var(--bg) 70%, transparent);
+        backdrop-filter: blur(8px);
+        color: var(--text-soft);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 200ms ease, color 200ms ease;
+        line-height: 1;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .image-preview-remove:hover {
+        background-color: var(--primary-soft);
+        color: var(--text);
+    }
+
+    .image-preview-remove:focus,
+    .image-preview-remove:active {
+        outline: none;
+        box-shadow: none;
+        background-color: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    .emoji-picker {
+        display: none;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background-color: var(--bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow: 0 4px 12px var(--card-border);
+        flex-wrap: wrap;
+        gap: 2px;
+        max-height: 250px;
+        overflow-y: auto;
+    }
+
+    .emoji-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 150ms ease;
+        border: none;
+        background: none;
+        padding: 0;
+    }
+
+    .emoji-item:hover {
+        background-color: var(--primary-soft);
+    }
+
+    .btn-primary {
+        border: none;
+        background-color: var(--primary);
+        color: var(--bg);
+        padding: 8px 18px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background-color 200ms ease, transform 120ms ease, box-shadow 200ms ease;
+        box-shadow: none;
+        outline: none;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .btn-primary:focus,
+    .btn-primary:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .btn-primary:active {
+        transform: scale(0.97);
+    }
+</style>
+
+<form action="{{ url_for('post.post_edit', post_id=post.id) }}"
+      method="POST"
+      enctype="multipart/form-data"
+      class="feed-create">
+
+    {{ form.hidden_tag() }}
+
+    <textarea name="text"
+              id="postTextArea"
+              placeholder="Что у тебя нового?">{{ post.text }}</textarea>
+
+    {% for error in form.text.errors %}
+    <div class="feed-create-error">{{ error }}</div>
+    {% endfor %}
+
+    <div id="imagePreviewContainer"
+         class="image-preview-container"
+         style="display: {% if post.image %}block{% else %}none{% endif %};"
+         data-has-initial="{% if post.image %}true{% else %}false{% endif %}">
+
+        <img id="imagePreview"
+             src="{% if post.image %}{{ url_for('static', filename=post.image) }}{% endif %}"
+             alt="">
+
+        <button type="button" class="image-preview-remove" onclick="clearImagePreview()">✕</button>
+    </div>
+
+    <input type="checkbox" id="deleteImageFlag" name="delete_image" value="1" style="display: none;">
+
+    <div id="emojiPicker" class="emoji-picker">
+        {% for emoji in EMOJI_LIST %}
+        <button type="button" class="emoji-item" onclick="insertEmoji(`{{ emoji }}`)">{{ emoji }}</button>
+        {% endfor %}
+    </div>
+
+    <div class="feed-create-actions">
+        <div class="feed-create-left-actions">
+            <input type="file" id="imageInput" name="image" class="feed-create-file" accept=".jpeg, .jpg, .png">
+
+            <button type="button" class="icon-action-btn" onclick="document.getElementById('imageInput').click()">
+                <i class="bi bi-card-image"></i>
+            </button>
+
+            <button type="button" class="icon-action-btn" onclick="toggleEmojiPicker()" title="Смайлики">
+                <i class="bi bi-emoji-smile"></i>
+            </button>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            Сохранить
+        </button>
+    </div>
+</form>
+
+<script>
+    function toggleEmojiPicker() {
+        const picker = document.getElementById('emojiPicker');
+        picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function insertEmoji(emoji) {
+        const textarea = document.getElementById('postTextArea');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+
+        textarea.value = text.substring(0, start) + emoji + text.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + emoji.length;
+        textarea.focus();
+
+        document.getElementById('emojiPicker').style.display = 'none';
+    }
+
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImg = document.getElementById('imagePreview');
+        const deleteFlag = document.getElementById('deleteImageFlag');
+
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+                deleteFlag.checked = false;
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            clearImagePreview();
+        }
+    });
+
+    function clearImagePreview() {
+        const input = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImg = document.getElementById('imagePreview');
+        const deleteFlag = document.getElementById('deleteImageFlag');
+
+        const hadInitial = previewContainer.getAttribute('data-has-initial') === 'true';
+
+        if (hadInitial) {
+            deleteFlag.checked = true;
+        }
+
+        input.value = '';
+        previewImg.src = '';
+        previewContainer.style.display = 'none';
+    }
+
+    document.addEventListener('click', function (e) {
+        const picker = document.getElementById('emojiPicker');
+        const btn = e.target.closest('.icon-action-btn');
+        if (picker && !picker.contains(e.target) && !btn) {
+            picker.style.display = 'none';
+        }
+    });
+</script>
+
+{% endblock %}
