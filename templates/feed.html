@@ -289,12 +289,18 @@
 
                 <div>
 
-                    <a href="{{ url_for('profile.user_profile', username=post.author.username) }}"
-                       class="feed-card-nickname">
+                    {% if post.author and post.author.username %}
+                        <a href="{{ url_for('profile.user_profile', username=post.author.username) }}"
+                           class="feed-card-nickname">
 
-                        <strong>{{ post.author.nickname }}</strong>
+                            <strong>{{ post.author.nickname }}</strong>
 
-                    </a>
+                        </a>
+                    {% else %}
+                        <span class="feed-card-nickname">
+                            <strong>Удалённый пользователь</strong>
+                        </span>
+                    {% endif %}
 
                     <div class="feed-card-date">
                         {{ post.pretty_date }}
