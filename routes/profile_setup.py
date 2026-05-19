@@ -29,8 +29,7 @@ def profile_setup():
             filename = f'{user.id}.{file.filename.split('.')[-1].lower()}'
             file.save(f'static/avatars/{filename}')
             user.avatar = f'avatars/{filename}'
-        else:
-            user.avatar = 'avatars/default.jpg'
+
         db_sess.commit()
 
         return redirect('/')

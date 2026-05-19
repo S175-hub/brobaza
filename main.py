@@ -28,7 +28,7 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-    DB_PATH = os.path.join(BASE_DIR, "data", "database.db")
+    DB_PATH = os.path.join(BASE_DIR, 'data', 'database.db')
     db_session.global_init(DB_PATH)
     return app
 

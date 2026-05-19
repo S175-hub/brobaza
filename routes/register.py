@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect
+from flask import Blueprint, render_template, redirect, request
 from flask_login import login_user
 from data import db_session
 from data.users import Users
@@ -20,7 +20,16 @@ def register():
 
         user = Users(email=form.email.data)
         user.set_password(form.password.data)
+        user.theme = request.cookies.get('user_theme', 'light')
+
         db_sess.add(user)
+        db_sess.flush()
+
+        default_name = f'user{user.id}'
+        user.username = default_name
+        user.nickname = default_name
+        user.avatar = 'avatars/default.jpg'
+
         db_sess.commit()
 
         login_user(user)
