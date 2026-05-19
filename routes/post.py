@@ -60,20 +60,26 @@ def post_edit(post_id):
 
         form = AddPost()
 
-        if request.method == 'POST':
-            post.text = request.form.get('text', '').strip()
-
+        if form.validate_on_submit():
+            text = (form.text.data or "").strip()
+            file = form.image.data
             delete_image = 'delete_image' in request.form
-            file = request.files.get('image')
-            new_file = file and file.filename != ''
 
-            if new_file:
+            will_have_image = (file and file.filename) or (post.image and not delete_image)
+
+            if not text and not will_have_image:
+                form.text.errors.append('Пост не может быть пустым')
+                return render_template('post_edit.html', form=form, post=post)
+
+            post.text = text
+
+            if file and file.filename:
                 if post.image:
                     old_path = os.path.join(current_app.root_path, 'static', post.image)
                     if os.path.exists(old_path):
                         os.remove(old_path)
 
-                filename = f'{post.id}.{file.filename.split('.')[-1].lower()}'
+                filename = f'{post.id}.{file.filename.split(".")[-1].lower()}'
                 file.save(f'static/posts/{filename}')
                 post.image = f'posts/{filename}'
 

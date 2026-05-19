@@ -31,9 +31,10 @@
         color: var(--text-soft);
     }
 
-    .feed-create textarea:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-soft);
+    .feed-create-error {
+        color: var(--errors);
+        margin-top: 5px;
+        font-size: 13px;
     }
 
     .feed-create-error {
@@ -228,6 +229,10 @@
         <button type="button" class="image-preview-remove" onclick="clearImagePreview()">✕</button>
     </div>
 
+    {% for error in form.image.errors %}
+    <div class="feed-create-error">{{ error }}</div>
+    {% endfor %}
+
     <input type="checkbox" id="deleteImageFlag" name="delete_image" value="1" style="display: none;">
 
     <div id="emojiPicker" class="emoji-picker">
@@ -278,7 +283,15 @@
         const file = e.target.files[0];
         const previewContainer = document.getElementById('imagePreviewContainer');
         const previewImg = document.getElementById('imagePreview');
-        const deleteFlag = document.getElementById('deleteImageFlag');
+
+        const maxSizeMB = 20;
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        if (file && file.size > maxSizeBytes) {
+            alert(`Файл слишком большой! Максимум ${maxSizeMB} МБ.`);
+            this.value = '';
+            clearImagePreview();
+            return;
+        }
 
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
@@ -286,7 +299,6 @@
             reader.onload = function(e) {
                 previewImg.src = e.target.result;
                 previewContainer.style.display = 'block';
-                deleteFlag.checked = false;
             }
 
             reader.readAsDataURL(file);

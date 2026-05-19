@@ -217,6 +217,10 @@
         <button type="button" class="image-preview-remove" onclick="clearImagePreview()">✕</button>
     </div>
 
+    {% for error in form.image.errors %}
+    <div class="feed-create-error">{{ error }}</div>
+    {% endfor %}
+
     <div id="emojiPicker" class="emoji-picker">
         {% for emoji in EMOJI_LIST %}
         <button type="button" class="emoji-item" onclick="insertEmoji(`{{ emoji }}`)">{{ emoji }}</button>
@@ -266,6 +270,15 @@
         const file = e.target.files[0];
         const previewContainer = document.getElementById('imagePreviewContainer');
         const previewImg = document.getElementById('imagePreview');
+
+        const maxSizeMB = 20;
+        const maxSizeBytes = maxSizeMB * 1024 * 1024;
+        if (file && file.size > maxSizeBytes) {
+            alert(`Файл слишком большой! Максимум ${maxSizeMB} МБ.`);
+            this.value = '';
+            clearImagePreview();
+            return;
+        }
 
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();

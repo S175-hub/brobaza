@@ -35,6 +35,7 @@ def create_app():
 
 app = create_app()
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024
 
 login_manager = LoginManager()
 login_manager.init_app(app)
