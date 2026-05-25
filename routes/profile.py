@@ -114,7 +114,7 @@ def user_following(username):
             abort(404)
 
         following = get_following(db_sess, user.id)
-        following_ids = get_following_ids(db_sess, user.id)
+        following_ids = get_following_ids(db_sess, current_user.id) if current_user.is_authenticated else set()
         if not (current_user.is_authenticated and user.id == current_user.id):
             return render_template('follows.html', user=user, active_tab='following', following=following, following_ids=following_ids)
 
@@ -134,7 +134,7 @@ def user_followers(username):
             abort(404)
 
         followers = get_followers(db_sess, user.id)
-        following_ids = get_following_ids(db_sess, user.id)
+        following_ids = get_following_ids(db_sess, current_user.id) if current_user.is_authenticated else set()
         if not (current_user.is_authenticated and user.id == current_user.id):
             return render_template('follows.html', user=user, active_tab='followers', followers=followers, following_ids=following_ids)
 
