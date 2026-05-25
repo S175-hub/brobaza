@@ -67,6 +67,22 @@ body {
 
 .profile-meta-label {
     color: var(--text-soft);
+    transition: color 200ms ease;
+}
+
+.profile-meta-link {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.profile-meta-link:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.profile-meta-link:hover .profile-meta-label {
+    color: var(--primary);
 }
 
 .profile-right {
@@ -481,8 +497,24 @@ body {
             <img src="{{ url_for('static', filename=user.avatar) }}" class="profile-avatar" alt="">
 
             <div class="profile-meta">
-                <span><span class="profile-meta-label">Подписки:</span> {{ followed }}</span>
-                <span><span class="profile-meta-label">Подписчики:</span> {{ followers }}</span>
+                {% if current_user.is_authenticated and current_user.id == user.id %}
+                    {% set following_url = url_for('profile.following') %}
+                    {% set followers_url = url_for('profile.followers') %}
+                {% else %}
+                    {% set following_url = url_for('profile.user_following', username=user.username) %}
+                    {% set followers_url = url_for('profile.user_followers', username=user.username) %}
+                {% endif %}
+
+                <span>
+                    <a href="{{ following_url }}" class="profile-meta-link">
+                        <span class="profile-meta-label">Подписки:</span> {{ followed }}
+                    </a>
+                </span>
+                <span>
+                    <a href="{{ followers_url }}" class="profile-meta-link">
+                        <span class="profile-meta-label">Подписчики:</span> {{ followers }}
+                    </a>
+                </span>
                 <span><span class="profile-meta-label">Дата регистрации:</span> {{ registered_on }}</span>
             </div>
         </div>

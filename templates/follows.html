@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+:root {
+    --primary: {{ THEME.primary }};
+    --primary-soft: {{ THEME.primary_soft }};
+    --text: {{ THEME.text }};
+    --text-soft: {{ THEME.text_soft }};
+    --bg: {{ THEME.bg }};
+    --card-border: {{ THEME.card_border }};
+    --card-hover: {{ THEME.card_hover }};
+}
+
+body {
+    background-color: var(--bg);
+}
+
+.feed-layout {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.follow-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+    position: sticky;
+    top: 0;
+    background-color: var(--bg);
+    z-index: 10;
+}
+
+.follow-back-link {
+    text-decoration: none;
+    color: var(--text);
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+.follow-back-link:hover {
+    background-color: var(--primary-soft);
+    color: var(--primary);
+}
+
+.follow-header-info h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+.follow-header-info span {
+    font-size: 13px;
+    color: var(--text-soft);
+}
+
+.profile-tabs {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--card-border);
+    padding: 0 16px;
+}
+
+.profile-tab {
+    text-decoration: none;
+    padding-bottom: 12px;
+    padding-top: 12px;
+    transition: color 200ms ease;
+}
+
+.profile-tab:hover,
+.profile-tab:focus,
+.profile-tab:active {
+    text-decoration: none;
+}
+
+.profile-tab-active {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 2px solid var(--primary);
+}
+
+.profile-tab-active:hover,
+.profile-tab-active:focus,
+.profile-tab-active:active {
+    color: var(--text);
+    border-bottom: 2px solid var(--primary);
+}
+
+.profile-tab-inactive {
+    color: var(--text-soft);
+    font-weight: 400;
+    border-bottom: 2px solid transparent;
+}
+
+.profile-tab-inactive:hover {
+    color: var(--primary);
+    border-bottom: 2px solid transparent;
+}
+
+.follow-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--card-border);
+    transition: background-color 200ms ease;
+}
+
+.follow-item:hover {
+    background-color: var(--card-hover);
+}
+
+.follow-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+}
+
+.follow-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.follow-item-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.follow-item-nickname {
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.follow-item-nickname:hover {
+    text-decoration: none;
+    color: var(--primary);
+}
+
+.follow-item-username {
+    font-size: 13px;
+    color: var(--text-soft);
+}
+
+.btn-follow, .btn-unfollow {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    border: none;
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 130px;
+    box-sizing: border-box;
+}
+
+.btn-follow {
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-follow:hover {
+    box-shadow: 0 0 0 3px var(--primary-soft);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-unfollow {
+    background-color: var(--primary-soft);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.btn-unfollow:hover {
+    box-shadow: 0 0 0 3px var(--primary-soft);
+    text-decoration: none;
+    color: var(--primary);
+}
+
+.feed-empty {
+    text-align: center;
+    color: var(--text-soft);
+    padding: 40px 16px;
+}
+</style>
+
+<div class="feed-layout">
+
+    <div class="follow-header">
+        <a href="{{ url_for('profile.user_profile', username=user.username) }}" class="follow-back-link">
+            {{ BACK_ICON | safe }}
+        </a>
+        <div class="follow-header-info">
+            <h2>{{ user.nickname }}</h2>
+            <span>@{{ user.username }}</span>
+        </div>
+    </div>
+
+    <div class="profile-tabs">
+        {% if current_user.is_authenticated and user.id == current_user.id %}
+            {% set followers_url = url_for('profile.followers') %}
+            {% set following_url = url_for('profile.following') %}
+        {% else %}
+            {% set followers_url = url_for('profile.user_followers', username=user.username) %}
+            {% set following_url = url_for('profile.user_following', username=user.username) %}
+        {% endif %}
+
+        <a href="{{ followers_url }}"
+           class="profile-tab {% if active_tab == 'followers' %}profile-tab-active{% else %}profile-tab-inactive{% endif %}">
+            Подписчики
+        </a>
+
+        <a href="{{ following_url }}"
+           class="profile-tab {% if active_tab == 'following' %}profile-tab-active{% else %}profile-tab-inactive{% endif %}">
+            Подписки
+        </a>
+    </div>
+
+    {% set users_list = following if active_tab == 'following' else followers %}
+
+    {% for u in users_list %}
+    <div class="follow-item">
+        <div class="follow-item-left">
+            <a href="{{ url_for('profile.user_profile', username=u.username) }}">
+                <img src="{{ url_for('static', filename=u.avatar) }}" class="follow-avatar" alt="">
+            </a>
+            <div class="follow-item-info">
+                <a href="{{ url_for('profile.user_profile', username=u.username) }}" class="follow-item-nickname">
+                    {{ u.nickname }}
+                </a>
+                <span class="follow-item-username">@{{ u.username }}</span>
+            </div>
+        </div>
+
+        {% if current_user.is_authenticated and u.id != current_user.id %}
+
+            {% if not (user.id == current_user.id and active_tab == 'following') %}
+
+                <div>
+                    {% if u.id in following_ids %}
+                        <a href="{{ url_for('follow.unfollow', user_id=u.id, next=request.path) }}" class="btn-unfollow">
+                            Отписаться
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('follow.follow', user_id=u.id, next=request.path) }}" class="btn-follow">
+                            Подписаться
+                        </a>
+                    {% endif %}
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+    </div>
+    {% else %}
+    <p class="feed-empty">
+        {% if active_tab == 'following' %}
+            Пока ни на кого не подписан
+        {% else %}
+            Пока нет подписчиков
+        {% endif %}
+    </p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

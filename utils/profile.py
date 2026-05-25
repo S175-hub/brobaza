@@ -1,6 +1,8 @@
 from sqlalchemy.orm import joinedload
+from data.users import Users
 from data.posts import Posts
 from data.likes import Likes
+from data.follows import Follows
 from utils.date import time_ago
 
 
@@ -45,3 +47,32 @@ def get_liked_post_ids(db_sess, user_id):
     }
 
     return liked_post_ids
+
+
+def get_following(db_sess, user_id):
+    following = (
+        db_sess.query(Users)
+        .join(Follows, Follows.followed_id == Users.id)
+        .filter(Follows.follower_id == user_id)
+        .all()
+    )
+    return following
+
+
+def get_followers(db_sess, user_id):
+    followers = (
+        db_sess.query(Users)
+        .join(Follows, Follows.follower_id == Users.id)
+        .filter(Follows.followed_id == user_id)
+        .all()
+    )
+    return followers
+
+
+def get_following_ids(db_sess, user_id):
+    following_ids = {
+        row[0] for row in db_sess.query(Follows.followed_id)
+        .filter(Follows.follower_id == user_id)
+        .all()
+    }
+    return following_ids

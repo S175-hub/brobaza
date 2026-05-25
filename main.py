@@ -18,7 +18,7 @@ from routes.profile_setup import profile_setup_bp
 from routes.register import register_bp
 from routes.settings import settings_bp
 from ui.emojis import EMOJI_LIST
-from ui.likes import LIKE_ICON_EMPTY, LIKE_ICON_FILLED
+from ui.icons import LIKE_ICON_EMPTY, LIKE_ICON_FILLED, BACK_ICON
 from ui.menu import SIDEBAR_MENU
 from utils.theme import THEME_DARK, THEME_LIGHT
 
@@ -64,10 +64,11 @@ def inject_emojis():
 
 
 @app.context_processor
-def inject_like_icons():
+def inject_icons():
     return dict(
         LIKE_ICON_EMPTY=LIKE_ICON_EMPTY,
-        LIKE_ICON_FILLED=LIKE_ICON_FILLED
+        LIKE_ICON_FILLED=LIKE_ICON_FILLED,
+        BACK_ICON=BACK_ICON
     )
 
 
