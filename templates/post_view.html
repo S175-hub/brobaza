@@ -150,6 +150,22 @@
     .feed-like-count { color: var(--text-soft) !important; font-size: 14px; transition: color 200ms ease; line-height: 1; }
     .feed-like:hover { background-color: var(--like-soft); color: var(--like) !important; }
     .feed-like:hover .feed-like-count { color: var(--like) !important; }
+
+    /* ВОТ ЭТО ОБЯЗАТЕЛЬНО ДОБАВИТЬ: */
+    .feed-like:focus,
+    .feed-like:focus-visible,
+    .feed-like:active {
+        outline: none !important;
+        box-shadow: none !important;
+        background-color: var(--like-soft);
+        color: var(--like) !important;
+    }
+    .feed-like:focus .feed-like-count,
+    .feed-like:focus-visible .feed-like-count,
+    .feed-like:active .feed-like-count {
+        color: var(--like) !important;
+    }
+
     .feed-like.is-liked { color: var(--like) !important; }
     .feed-like.is-liked .feed-like-count { color: var(--like) !important; }
     .feed-like.is-liked:hover { background-color: var(--like-soft); color: var(--like) !important; }

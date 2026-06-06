@@ -36,6 +36,11 @@
             --errors: {{ THEME.errors }};
         }
 
+        button:focus, a:focus, [tabindex]:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
         body {
             background-color: var(--bg);
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;

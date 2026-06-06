@@ -15,7 +15,7 @@ def create():
     form = AddPost()
 
     db_sess = db_session.create_session()
-    posts, liked_post_ids = get_feed(db_sess, current_user)
+    posts = get_feed(db_sess, current_user)
 
     if form.validate_on_submit():
         text = form.text.data
@@ -23,8 +23,7 @@ def create():
 
         if not text and (not file or not file.filename):
             form.text.errors.append('Пост не может быть пустым')
-            return render_template('feed.html', form=form, posts=posts, liked_post_ids=liked_post_ids,
-                                   EMOJI_LIST=EMOJI_LIST)
+            return render_template('feed.html', form=form, posts=posts)
 
         post = Posts(
             author_id=current_user.id,
@@ -41,4 +40,4 @@ def create():
 
         return redirect('/feed')
 
-    return render_template('feed.html', form=form, posts=posts, liked_post_ids=liked_post_ids, EMOJI_LIST=EMOJI_LIST)
+    return render_template('feed.html', form=form, posts=posts)
