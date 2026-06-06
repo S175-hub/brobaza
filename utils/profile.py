@@ -6,7 +6,7 @@ from data.follows import Follows
 from utils.date import time_ago
 
 
-def get_profile_likes(db_sess, user_id):
+def get_profile_likes(db_sess, user_id, current_user_id):
     posts = (
         db_sess.query(Posts)
         .options(joinedload(Posts.author), joinedload(Posts.likes))
@@ -16,14 +16,21 @@ def get_profile_likes(db_sess, user_id):
         .all()
     )
 
+    liked_post_ids = {
+        row[0] for row in db_sess.query(Likes.post_id)
+        .filter(Likes.user_id == current_user_id)
+        .all()
+    } if current_user_id else set()
+
     for post in posts:
         post.pretty_date = time_ago(post.created_at)
         post.like_count = len(post.likes)
+        post.is_liked = post.id in liked_post_ids
 
     return posts
 
 
-def get_posts(db_sess, user_id):
+def get_posts(db_sess, user_id, current_user_id):
     posts = (
         db_sess.query(Posts)
         .options(joinedload(Posts.author), joinedload(Posts.likes))
@@ -32,21 +39,28 @@ def get_posts(db_sess, user_id):
         .all()
     )
 
+    liked_post_ids = {
+        row[0] for row in db_sess.query(Likes.post_id)
+        .filter(Likes.user_id == current_user_id)
+        .all()
+    } if current_user_id else set()
+
     for post in posts:
         post.pretty_date = time_ago(post.created_at)
         post.like_count = len(post.likes)
+        post.is_liked = post.id in liked_post_ids
 
     return posts
 
 
-def get_liked_post_ids(db_sess, user_id):
-    liked_post_ids = {
-        row[0] for row in db_sess.query(Likes.post_id)
-        .filter(Likes.user_id == user_id)
-        .all()
-    }
-
-    return liked_post_ids
+# def get_liked_post_ids(db_sess, user_id):
+#     liked_post_ids = {
+#         row[0] for row in db_sess.query(Likes.post_id)
+#         .filter(Likes.user_id == user_id)
+#         .all()
+#     }
+#
+#     return liked_post_ids
 
 
 def get_following(db_sess, user_id):

@@ -10,14 +10,34 @@ def get_feed(db_sess, current_user):
         .all()
     )
 
-    for post in posts:
-        post.pretty_date = time_ago(post.created_at)
-        post.like_count = len(post.likes)
-
     liked_post_ids = {
         row[0] for row in db_sess.query(Likes.post_id)
         .filter(Likes.user_id == current_user.id)
         .all()
     } if current_user.is_authenticated else set()
 
-    return posts, liked_post_ids
+    for post in posts:
+        post.pretty_date = time_ago(post.created_at)
+        post.like_count = len(post.likes)
+        post.is_liked = post.id in liked_post_ids
+
+    return posts
+
+
+def get_post(db_sess, post_id, current_user):
+    post = db_sess.get(Posts, post_id)
+
+    post.pretty_date = time_ago(post.created_at)
+    post.like_count = len(post.likes)
+
+    post.is_liked = False
+    if current_user.is_authenticated:
+        is_liked = db_sess.query(Likes.post_id).filter(
+            Likes.user_id == current_user.id,
+            Likes.post_id == post.id
+        ).first()
+
+        if is_liked:
+            post.is_liked = True
+
+    return post

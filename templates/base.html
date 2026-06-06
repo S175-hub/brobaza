@@ -11,6 +11,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>{{ title }}</title>
 
+    <script>
+        if (sessionStorage.getItem('isBackNav') === 'true') {
+            document.documentElement.style.visibility = 'hidden';
+        }
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+    </script>
+
     <style>
         :root {
             --primary: {{ THEME.primary }};
@@ -396,6 +405,15 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
+        if (sessionStorage.getItem('isBackNav') === 'true') {
+            sessionStorage.removeItem('isBackNav');
+            const savedScroll = sessionStorage.getItem('scrollPos_' + window.location.pathname);
+            if (savedScroll) {
+                window.scrollTo(0, parseInt(savedScroll, 10));
+            }
+            document.documentElement.style.visibility = 'visible';
+        }
+
         document.body.addEventListener('click', function(e) {
             const link = e.target.closest('a');
 
@@ -414,6 +432,8 @@
             const mainContent = document.querySelector('.main-content');
 
             if (window.location.href === url) return;
+
+            sessionStorage.setItem('scrollPos_' + window.location.pathname, window.scrollY.toString());
 
             mainContent.style.opacity = '0.5';
             mainContent.style.transition = 'opacity 150ms ease';
@@ -461,6 +481,7 @@
         });
 
         window.addEventListener('popstate', function() {
+            sessionStorage.setItem('isBackNav', 'true');
             location.reload();
         });
     });

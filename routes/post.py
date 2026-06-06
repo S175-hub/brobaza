@@ -4,8 +4,32 @@ from flask_login import current_user, login_required
 from data import db_session
 from data.posts import Posts
 from forms.add_post import AddPost
+from utils.feed import get_post
 
 post_bp = Blueprint('post', __name__)
+
+
+@post_bp.route('/post/<int:post_id>')
+@login_required
+def post_view(post_id):
+    db_sess = db_session.create_session()
+
+    try:
+        post = get_post(db_sess, post_id, current_user)
+
+        if not post:
+            abort(404)
+
+        post = [post]
+
+        next_page = request.args.get('next')
+        if next_page and next_page.startswith('/'):
+            return redirect(next_page)
+
+        return render_template('post_view.html', posts=post)
+
+    finally:
+        db_sess.close()
 
 
 @post_bp.route('/post/delete/<int:post_id>', methods=['GET', 'POST'])

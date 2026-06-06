@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    :root {
+        --primary: {{ THEME.primary }};
+        --primary-soft: {{ THEME.primary_soft }};
+        --text: {{ THEME.text }};
+        --text-soft: {{ THEME.text_soft }};
+        --like: {{ THEME.like }};
+        --like-soft: {{ THEME.like_soft }};
+        --delete: {{ THEME.delete }};
+        --delete-soft: {{ THEME.delete_soft }};
+        --bg: {{ THEME.bg }};
+        --card-border: {{ THEME.card_border }};
+    }
+
+    body {
+        background-color: var(--bg);
+    }
+
+    .feed-layout {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .post-detail-header {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--card-border);
+        position: sticky;
+        top: 0;
+        background-color: var(--bg);
+        z-index: 10;
+    }
+
+    .post-detail-back {
+        text-decoration: none;
+        color: var(--text);
+        font-size: 20px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 200ms ease, color 200ms ease;
+    }
+
+    .post-detail-back:hover {
+        background-color: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    .post-detail-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+    .feed-card {
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: var(--bg);
+        margin-top: 20px;
+    }
+
+    .feed-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .feed-card-author {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .feed-card-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .feed-card-nickname {
+        text-decoration: none;
+        color: var(--text);
+        transition: color 200ms ease;
+    }
+
+    .feed-card-nickname:hover {
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .feed-card-date {
+        font-size: 12px;
+        color: var(--text-soft);
+    }
+
+    .feed-menu-wrap { position: relative; }
+    .feed-menu-btn {
+        border: none; background: none; font-size: 20px; line-height: 1;
+        cursor: pointer; color: var(--text-soft); padding: 6px 10px;
+        border-radius: 8px; transition: background-color 200ms ease, color 200ms ease;
+        outline: none; box-shadow: none;
+    }
+    .feed-menu-btn:hover { color: var(--primary); background-color: var(--primary-soft); }
+
+    .feed-menu-dropdown {
+        display: none; position: absolute; right: 0; top: 34px;
+        background-color: var(--bg); border: 1px solid var(--card-border);
+        border-radius: 10px; min-width: 160px; z-index: 100; overflow: hidden;
+    }
+
+    .feed-menu-edit, .feed-menu-delete {
+        display: block; padding: 10px 14px; text-decoration: none;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 14px; font-weight: 500; transition: background-color 200ms ease, color 200ms ease;
+    }
+    .feed-menu-edit { color: var(--text) !important; }
+    .feed-menu-edit:hover { background-color: var(--primary-soft); color: var(--primary) !important; text-decoration: none; }
+    .feed-menu-delete { color: var(--delete) !important; }
+    .feed-menu-delete:hover { background-color: var(--delete-soft); color: var(--delete) !important; text-decoration: none; }
+
+    .feed-card-text {
+        margin-top: 10px; margin-bottom: 10px; color: var(--text);
+    }
+
+    .feed-card-image {
+        width: 100%; border-radius: 10px; margin-top: 10px;
+    }
+
+    .feed-like {
+        text-decoration: none !important; font-size: 16px; display: inline-flex;
+        align-items: center; gap: 6px; padding: 4px 8px; margin-left: -8px;
+        margin-top: 10px; border-radius: 999px; border: none; background: none;
+        color: var(--text-soft) !important; transition: background-color 200ms ease, color 200ms ease;
+        cursor: pointer; outline: none; box-shadow: none;
+    }
+    .feed-like i { font-size: 18px; line-height: 1; transition: color 200ms ease, transform 150ms ease; }
+    .feed-like-count { color: var(--text-soft) !important; font-size: 14px; transition: color 200ms ease; line-height: 1; }
+    .feed-like:hover { background-color: var(--like-soft); color: var(--like) !important; }
+    .feed-like:hover .feed-like-count { color: var(--like) !important; }
+    .feed-like.is-liked { color: var(--like) !important; }
+    .feed-like.is-liked .feed-like-count { color: var(--like) !important; }
+    .feed-like.is-liked:hover { background-color: var(--like-soft); color: var(--like) !important; }
+    .feed-like.is-liked:hover .feed-like-count { color: var(--like) !important; }
+</style>
+
+<div class="feed-layout">
+
+    <div class="post-detail-header">
+        <a href="javascript:history.back()" class="post-detail-back">
+            {{ BACK_ICON | safe }}
+        </a>
+        <h2 class="post-detail-title">Пост</h2>
+    </div>
+
+    {% for post in posts %}
+        {% include "post_card.html" %}
+    {% endfor %}
+
+</div>
+
+<script>
+    function toggleMenu(e, id) {
+        e.stopPropagation();
+        const menu = document.getElementById("menu-" + id);
+        if (!menu) return;
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", function () {
+        document.querySelectorAll("[id^='menu-']").forEach(menu => {
+            menu.style.display = "none";
+        });
+    });
+</script>
+
+{% endblock %}

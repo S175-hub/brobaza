@@ -12,5 +12,5 @@ def feed():
     form = AddPost()
 
     db_sess = db_session.create_session()
-    posts, liked_post_ids = get_feed(db_sess, current_user)
-    return render_template('feed.html', form=form, posts=posts, liked_post_ids=liked_post_ids)
+    posts = get_feed(db_sess, current_user)
+    return render_template('feed.html', form=form, posts=posts)
