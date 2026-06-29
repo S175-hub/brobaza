@@ -227,14 +227,6 @@
     .comment-like.is-liked .comment-like-count { color: var(--like) !important; }
 
 
-    .comment-preview-text {
-        margin-top: 0;
-        margin-left: 52px;
-        word-wrap: break-word;
-        white-space: pre-wrap;
-        display: none;
-    }
-
     .comment-image-preview-container {
         display: none;
         position: relative;
@@ -301,8 +293,6 @@
             <img src="{{ url_for('static', filename=current_user.avatar if current_user.is_authenticated else 'avatars/default.jpg') }}" class="comment-avatar">
             {{ form.text(class="comment-textarea", placeholder="Что думаешь?", rows="1") }}
         </div>
-
-        <div id="commentPreviewText" class="feed-card-text comment-preview-text"></div>
 
         <div id="commentImagePreviewContainer" class="comment-image-preview-container">
             <img id="commentImagePreview" src="" alt="">
@@ -415,26 +405,9 @@
         }
     }
 
-    const commentTextarea = document.querySelector('.comment-textarea');
     const commentFileInput = document.getElementById('commentImageInput');
-    const previewTextBox = document.getElementById('commentPreviewText');
     const previewImgContainer = document.getElementById('commentImagePreviewContainer');
     const previewImg = document.getElementById('commentImagePreview');
-
-    function updateCommentPreview() {
-        const text = commentTextarea.value.trim();
-        if (text) {
-            previewTextBox.innerHTML = text.replace(/\n/g, '<br>');
-            previewTextBox.style.display = 'block';
-        } else {
-            previewTextBox.innerHTML = '';
-            previewTextBox.style.display = 'none';
-        }
-    }
-
-    if (commentTextarea) {
-        commentTextarea.addEventListener('input', updateCommentPreview);
-    }
 
     if (commentFileInput) {
         commentFileInput.addEventListener('change', function(e) {
