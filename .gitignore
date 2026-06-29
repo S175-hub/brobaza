@@ -3,3 +3,4 @@
 data/database.db
 static/avatars
 static/posts
+static/comments
