@@ -419,11 +419,8 @@
             document.documentElement.style.visibility = 'visible';
         }
 
-        #
         document.body.addEventListener('click', function(e) {
             if (e.target.closest('form')) return;
-
-            if (e.target.closest('.feed-like') || e.target.closest('.feed-comment-btn')) return;
 
             const link = e.target.closest('a');
 
@@ -433,14 +430,12 @@
             if (link.getAttribute('href') === '#') return;
             if (link.hostname !== window.location.hostname) return;
             if (link.hasAttribute('data-toggle')) return;
+
             if (link.id === 'theme-toggle-btn') return;
             if (link.classList.contains('dropdown-item-danger')) return;
-            if (link.classList.contains('feed-like')) return;
-            if (link.classList.contains('feed-comment-btn')) return;
+            if (link.classList.contains('feed-like') || link.classList.contains('feed-comment-btn')) return;
 
             e.preventDefault();
-
-            #
 
             const url = link.href;
             const mainContent = document.querySelector('.main-content');
