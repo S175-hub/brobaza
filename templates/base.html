@@ -419,7 +419,10 @@
             document.documentElement.style.visibility = 'visible';
         }
 
+        #
         document.body.addEventListener('click', function(e) {
+            if (e.target.closest('form')) return;
+
             const link = e.target.closest('a');
 
             if (!link) return;
@@ -432,6 +435,8 @@
             if (link.classList.contains('dropdown-item-danger')) return;
 
             e.preventDefault();
+
+            #
 
             const url = link.href;
             const mainContent = document.querySelector('.main-content');

@@ -2,15 +2,18 @@ import os.path
 from flask import Blueprint, render_template, redirect, abort, request, current_app, url_for
 from flask_login import current_user, login_required
 from data import db_session
+from data.comments import Comments
 from data.posts import Posts
+from data.likes_comments import LikesComments
+from forms.add_comment import AddComment
 from forms.add_post import AddPost
 from utils.feed import get_post
+from utils.date import time_ago
 
 post_bp = Blueprint('post', __name__)
 
 
 @post_bp.route('/post/<int:post_id>')
-@login_required
 def post_view(post_id):
     db_sess = db_session.create_session()
 
@@ -21,12 +24,27 @@ def post_view(post_id):
             abort(404)
 
         post = [post]
+        form = AddComment()
 
-        next_page = request.args.get('next')
-        if next_page and next_page.startswith('/'):
-            return redirect(next_page)
+        comments = db_sess.query(Comments).filter(Comments.post_id == post_id).order_by(
+            Comments.created_at.desc()).all()
 
-        return render_template('post_view.html', posts=post)
+        liked_comment_ids = set()
+        if current_user.is_authenticated:
+            liked_comment_ids = {
+                row[0] for row in db_sess.query(LikesComments.comment_id)
+                .filter(LikesComments.user_id == current_user.id)
+                .all()
+            }
+
+        for comment in comments:
+            comment.pretty_date = time_ago(comment.created_at)
+            comment.like_count = db_sess.query(LikesComments.id).filter(
+                LikesComments.comment_id == comment.id
+            ).count()
+            comment.is_liked = comment.id in liked_comment_ids
+
+        return render_template('post_view.html', posts=post, comments=comments, form=form, post_id=post_id)
 
     finally:
         db_sess.close()

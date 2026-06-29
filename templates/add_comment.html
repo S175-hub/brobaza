@@ -1,0 +1,133 @@
+<style>
+    .comment-create {
+        border: 1px solid var(--card-border);
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        margin-top: 20px;
+        background-color: var(--bg);
+    }
+
+    .comment-create-input {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .comment-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .comment-textarea {
+        flex: 1;
+        border: 1px solid var(--card-border);
+        outline: none;
+        resize: none;
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--text);
+        background-color: var(--bg);
+        box-sizing: border-box;
+        transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+
+    .comment-textarea::placeholder {
+        color: var(--text-soft);
+    }
+
+    .comment-textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .comment-create-actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .comment-create-left-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .icon-action-btn {
+        border: none;
+        background: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: var(--text-soft);
+        padding: 6px 8px;
+        border-radius: 8px;
+        transition: background-color 200ms ease, color 200ms ease;
+        line-height: 1;
+        outline: none;
+        box-shadow: none;
+    }
+
+    .icon-action-btn:hover {
+        background-color: var(--primary-soft);
+        color: var(--primary);
+    }
+
+    .feed-create-file {
+        display: none;
+    }
+
+    .comment-submit-btn {
+        border: none;
+        background-color: var(--primary);
+        color: var(--bg);
+        padding: 6px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        transition: background-color 200ms ease, transform 120ms ease, box-shadow 200ms ease;
+        box-shadow: none;
+        outline: none;
+    }
+
+    .comment-submit-btn:hover {
+        background-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .comment-submit-btn:active {
+        transform: scale(0.97);
+    }
+</style>
+
+<form action="{{ url_for('comment.add_comment', post_id=request.view_args.post_id) }}"
+      method="POST"
+      enctype="multipart/form-data"
+      class="comment-create">
+
+    {{ form.hidden_tag() }}
+    <input type="hidden" name="next" value="{{ request.path }}">
+
+    <div class="comment-create-input">
+        <img src="{{ url_for('static', filename=current_user.avatar) }}" class="comment-avatar">
+        {{ form.text(class="comment-textarea", placeholder="Что думаешь?", rows="1") }}
+    </div>
+
+    <div class="comment-create-actions">
+        <div class="comment-create-left-actions">
+            <input type="file" id="commentImageInput" name="image" class="feed-create-file" accept=".jpeg, .jpg, .png">
+            <button type="button" class="icon-action-btn" onclick="document.getElementById('commentImageInput').click()">
+                <i class="bi bi-card-image"></i>
+            </button>
+        </div>
+        {{ form.submit(class="comment-submit-btn") }}
+    </div>
+</form>

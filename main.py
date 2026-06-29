@@ -5,6 +5,7 @@ from flask_login import LoginManager, current_user
 from data import db_session
 from data.users import Users
 from routes.api import api_bp
+from routes.comments import comment_bp
 from routes.create import create_bp
 from routes.feed import feed_bp
 from routes.follow import follow_bp
@@ -18,7 +19,7 @@ from routes.profile_setup import profile_setup_bp
 from routes.register import register_bp
 from routes.settings import settings_bp
 from ui.emojis import EMOJI_LIST
-from ui.icons import LIKE_ICON_EMPTY, LIKE_ICON_FILLED, BACK_ICON
+from ui.icons import LIKE_ICON_EMPTY, LIKE_ICON_FILLED, BACK_ICON, COMMENT_ICON
 from ui.menu import SIDEBAR_MENU
 from utils.theme import THEME_DARK, THEME_LIGHT
 
@@ -68,7 +69,8 @@ def inject_icons():
     return dict(
         LIKE_ICON_EMPTY=LIKE_ICON_EMPTY,
         LIKE_ICON_FILLED=LIKE_ICON_FILLED,
-        BACK_ICON=BACK_ICON
+        BACK_ICON=BACK_ICON,
+        COMMENT_ICON=COMMENT_ICON
     )
 
 
@@ -97,6 +99,7 @@ app.register_blueprint(profile_edit_bp)
 app.register_blueprint(settings_bp)
 app.register_blueprint(placeholder_bp)
 app.register_blueprint(api_bp)
+app.register_blueprint(comment_bp)
 
 
 @app.errorhandler(404)

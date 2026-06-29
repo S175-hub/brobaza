@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify
 from flask_login import login_required, current_user
 from data import db_session
 from data.likes import Likes
+from data.likes_comments import LikesComments
 
 like_bp = Blueprint('like', __name__)
 
@@ -23,6 +24,31 @@ def like(post_id):
         db_sess.commit()
         count = db_sess.query(Likes).filter(Likes.post_id == post_id).count()
 
+        return jsonify({"liked": liked, "count": count})
+
+    finally:
+        db_sess.close()
+
+
+@like_bp.route('/like_comment/<int:comment_id>')
+@login_required
+def like_comment(comment_id):
+    db_sess = db_session.create_session()
+
+    try:
+        like = db_sess.query(LikesComments).filter(
+            LikesComments.user_id == current_user.id, LikesComments.comment_id == comment_id
+        ).first()
+
+        if like:
+            db_sess.delete(like)
+            liked = False
+        else:
+            db_sess.add(LikesComments(user_id=current_user.id, comment_id=comment_id))
+            liked = True
+
+        db_sess.commit()
+        count = db_sess.query(LikesComments).filter(LikesComments.comment_id == comment_id).count()
         return jsonify({"liked": liked, "count": count})
 
     finally:
