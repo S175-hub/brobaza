@@ -1,7 +1,7 @@
 from data.posts import Posts
 from data.likes import Likes
+from data.comments import Comments
 from utils.date import time_ago
-
 
 def get_feed(db_sess, current_user):
     posts = (
@@ -20,6 +20,7 @@ def get_feed(db_sess, current_user):
         post.pretty_date = time_ago(post.created_at)
         post.like_count = len(post.likes)
         post.is_liked = post.id in liked_post_ids
+        post.comment_count = db_sess.query(Comments.id).filter(Comments.post_id == post.id).count()
 
     return posts
 
@@ -29,6 +30,7 @@ def get_post(db_sess, post_id, current_user):
 
     post.pretty_date = time_ago(post.created_at)
     post.like_count = len(post.likes)
+    post.comment_count = db_sess.query(Comments.id).filter(Comments.post_id == post.id).count()
 
     post.is_liked = False
     if current_user.is_authenticated:

@@ -341,20 +341,20 @@
         fetch(`/like/${postId}`)
             .then(res => res.json())
             .then(data => {
-                const icon = el.querySelector('i');
-                const countSpan = el.querySelector('.feed-like-count');
+                const btn = el.closest('.feed-like') || el;
+                const icon = btn.querySelector('i');
+                const countSpan = btn.querySelector('.feed-like-count');
 
-                if (data.liked) {
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill');
-                    el.classList.add('is-liked');
-                } else {
-                    icon.classList.remove('bi-heart-fill');
-                    icon.classList.add('bi-heart');
-                    el.classList.remove('is-liked');
-                }
-
-                if (countSpan) {
+                if (icon && countSpan) {
+                    if (data.liked) {
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+                        btn.classList.add('is-liked');
+                    } else {
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                        btn.classList.remove('is-liked');
+                    }
                     countSpan.innerText = data.count;
                 }
             })
@@ -423,6 +423,8 @@
         document.body.addEventListener('click', function(e) {
             if (e.target.closest('form')) return;
 
+            if (e.target.closest('.feed-like') || e.target.closest('.feed-comment-btn')) return;
+
             const link = e.target.closest('a');
 
             if (!link) return;
@@ -433,6 +435,8 @@
             if (link.hasAttribute('data-toggle')) return;
             if (link.id === 'theme-toggle-btn') return;
             if (link.classList.contains('dropdown-item-danger')) return;
+            if (link.classList.contains('feed-like')) return;
+            if (link.classList.contains('feed-comment-btn')) return;
 
             e.preventDefault();
 

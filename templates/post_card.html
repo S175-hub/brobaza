@@ -86,20 +86,56 @@
          class="feed-card-image">
     {% endif %}
 
-    <button type="button"
-       onclick="likePost({{ post.id }}, this)"
-       class="feed-like {% if post.is_liked %}is-liked{% endif %}">
+    <div style="display: flex; align-items: center; gap: 4px; position: relative; z-index: 2;">
+        <button type="button"
+           onclick="likePost({{ post.id }}, this)"
+           class="feed-like {% if post.is_liked %}is-liked{% endif %}">
 
-        {% if post.is_liked %}
-            {{ LIKE_ICON_FILLED | safe }}
-        {% else %}
-            {{ LIKE_ICON_EMPTY | safe }}
-        {% endif %}
+            {% if post.is_liked %}
+                {{ LIKE_ICON_FILLED | safe }}
+            {% else %}
+                {{ LIKE_ICON_EMPTY | safe }}
+            {% endif %}
 
-        <span class="feed-like-count">
-            {{ post.like_count }}
-        </span>
+            <span class="feed-like-count">
+                {{ post.like_count }}
+            </span>
 
-    </button>
+        </button>
+
+        <a href="{{ url_for('post.post_view', post_id=post.id) }}" class="feed-comment-btn">
+            {{ COMMENT_ICON | safe }}
+            <span class="feed-comment-count">{{ post.comment_count }}</span>
+        </a>
+    </div>
 
 </div>
+
+<script>
+    function likePost(postId, el) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        fetch(`/like/${postId}`)
+            .then(res => res.json())
+            .then(data => {
+                const icon = el.querySelector('i');
+                const countSpan = el.querySelector('.feed-like-count');
+
+                if (data.liked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    el.classList.add('is-liked');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    el.classList.remove('is-liked');
+                }
+
+                if (countSpan) {
+                    countSpan.innerText = data.count;
+                }
+            })
+            .catch(err => console.log(err));
+    }
+</script>

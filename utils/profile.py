@@ -2,6 +2,7 @@ from sqlalchemy.orm import joinedload
 from data.users import Users
 from data.posts import Posts
 from data.likes import Likes
+from data.comments import Comments
 from data.follows import Follows
 from utils.date import time_ago
 
@@ -26,6 +27,7 @@ def get_profile_likes(db_sess, user_id, current_user_id):
         post.pretty_date = time_ago(post.created_at)
         post.like_count = len(post.likes)
         post.is_liked = post.id in liked_post_ids
+        post.comment_count = db_sess.query(Comments.id).filter(Comments.post_id == post.id).count()
 
     return posts
 
@@ -49,6 +51,7 @@ def get_posts(db_sess, user_id, current_user_id):
         post.pretty_date = time_ago(post.created_at)
         post.like_count = len(post.likes)
         post.is_liked = post.id in liked_post_ids
+        post.comment_count = db_sess.query(Comments.id).filter(Comments.post_id == post.id).count()
 
     return posts
 

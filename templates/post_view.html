@@ -69,6 +69,25 @@
         margin-bottom: 20px;
         background-color: var(--bg);
         margin-top: 20px;
+        position: relative;
+    }
+
+    .feed-card-link {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        color: inherit;
+    }
+
+    .feed-card-author a,
+    .feed-menu-wrap,
+    .feed-like,
+    .feed-comment-btn {
+        position: relative;
+        z-index: 2;
     }
 
     .feed-card-header {
@@ -154,45 +173,39 @@
     .feed-like.is-liked { color: var(--like) !important; }
     .feed-like.is-liked .feed-like-count { color: var(--like) !important; }
 
-
-    .comment-create {
-        border: 1px solid var(--card-border);
-        padding: 15px;
-        border-radius: 12px;
-        margin-bottom: 20px;
-        margin-top: 20px;
-        background-color: var(--bg);
+    .feed-comment-btn {
+        text-decoration: none !important;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        margin-top: 10px;
+        border-radius: 999px;
+        border: none;
+        background: none;
+        color: var(--text-soft) !important;
+        transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+        cursor: pointer;
+        outline: none;
+        box-shadow: none;
+        line-height: 1;
     }
-    .comment-create-input { display: flex; gap: 12px; align-items: flex-start; }
-    .comment-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-    .comment-textarea {
-        flex: 1; border: 1px solid var(--card-border); outline: none; resize: none;
-        border-radius: 10px; padding: 12px 14px;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 14px; line-height: 1.4; color: var(--text); background-color: var(--bg);
-        box-sizing: border-box; transition: border-color 200ms ease, box-shadow 200ms ease;
+    .feed-comment-btn i { font-size: 18px; line-height: 1; }
+    .feed-comment-count { color: var(--text-soft) !important; font-size: 14px; line-height: 1; transition: color 200ms ease; }
+    .feed-comment-btn:hover,
+    .feed-comment-btn:active,
+    .feed-comment-btn:focus {
+        background-color: var(--primary-soft) !important;
+        color: var(--primary) !important;
+        box-shadow: 0 0 0 3px var(--primary-soft) !important;
+        text-decoration: none !important;
+        outline: none !important;
     }
-    .comment-textarea::placeholder { color: var(--text-soft); }
-    .comment-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-    .comment-create-actions { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .comment-create-left-actions { display: flex; align-items: center; gap: 4px; }
-    .icon-action-btn {
-        border: none; background: none; font-size: 20px; cursor: pointer;
-        color: var(--text-soft); padding: 6px 8px; border-radius: 8px;
-        transition: background-color 200ms ease, color 200ms ease; line-height: 1; outline: none; box-shadow: none;
+    .feed-comment-btn:hover .feed-comment-count,
+    .feed-comment-btn:active .feed-comment-count {
+        color: var(--primary) !important;
     }
-    .icon-action-btn:hover { background-color: var(--primary-soft); color: var(--primary); }
-    .feed-create-file { display: none; }
-    .comment-submit-btn {
-        border: none; background-color: var(--primary); color: var(--bg);
-        padding: 6px 16px; border-radius: 999px; cursor: pointer;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 13px; font-weight: 600; transition: background-color 200ms ease, transform 120ms ease, box-shadow 200ms ease;
-        box-shadow: none; outline: none;
-    }
-    .comment-submit-btn:hover { background-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-    .comment-submit-btn:active { transform: scale(0.97); }
-
 
     .comments-list { margin-top: 20px; }
 
@@ -226,46 +239,6 @@
     .comment-like.is-liked { color: var(--like) !important; }
     .comment-like.is-liked .comment-like-count { color: var(--like) !important; }
 
-
-    .comment-image-preview-container {
-        display: none;
-        position: relative;
-        margin-top: 12px;
-        margin-left: 52px;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid var(--card-border);
-    }
-    .comment-image-preview-container img {
-        width: 100%;
-        display: block;
-    }
-    .comment-image-preview-remove {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        border: none;
-        background-color: color-mix(in srgb, var(--bg) 70%, transparent);
-        backdrop-filter: blur(8px);
-        color: var(--text-soft);
-        font-size: 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background-color 200ms ease, color 200ms ease;
-        line-height: 1;
-        outline: none;
-        box-shadow: none;
-    }
-    .comment-image-preview-remove:hover {
-        background-color: var(--primary-soft);
-        color: var(--text);
-    }
-
 </style>
 
 <div class="feed-layout">
@@ -281,36 +254,9 @@
     {% include "post_card.html" %}
     {% endfor %}
 
-    <form action="{{ url_for('comment.add_comment', post_id=post_id) }}"
-          method="POST"
-          enctype="multipart/form-data"
-          class="comment-create">
-
-        {{ form.hidden_tag() }}
-        <input type="hidden" name="next" value="{{ request.path }}">
-
-        <div class="comment-create-input">
-            <img src="{{ url_for('static', filename=current_user.avatar if current_user.is_authenticated else 'avatars/default.jpg') }}" class="comment-avatar">
-            {{ form.text(class="comment-textarea", placeholder="Что думаешь?", rows="1") }}
-        </div>
-
-        <div id="commentImagePreviewContainer" class="comment-image-preview-container">
-            <img id="commentImagePreview" src="" alt="">
-            <button type="button" class="comment-image-preview-remove" onclick="clearCommentImagePreview()">✕</button>
-        </div>
-
-        <div class="comment-create-actions">
-            <div class="comment-create-left-actions">
-                <input type="file" id="commentImageInput" name="image" class="feed-create-file"
-                       accept=".jpeg, .jpg, .png">
-                <button type="button" class="icon-action-btn"
-                        onclick="document.getElementById('commentImageInput').click()">
-                    <i class="bi bi-card-image"></i>
-                </button>
-            </div>
-            {{ form.submit(class="comment-submit-btn") }}
-        </div>
-    </form>
+    {% if form %}
+    {% include "add_comment.html" %}
+    {% endif %}
 
     <div class="comments-list">
         {% for comment in comments %}
@@ -381,12 +327,6 @@
     async function likeComment(commentId, btn) {
         try {
             const response = await fetch(`/like_comment/${commentId}`);
-
-            if (response.status === 401 || response.status === 403 || response.redirected) {
-                window.location.href = '/login';
-                return;
-            }
-
             if (!response.ok) throw new Error('Ошибка сети');
 
             const data = await response.json();
@@ -403,32 +343,6 @@
         } catch (error) {
             console.error('Ошибка лайка:', error);
         }
-    }
-
-    const commentFileInput = document.getElementById('commentImageInput');
-    const previewImgContainer = document.getElementById('commentImagePreviewContainer');
-    const previewImg = document.getElementById('commentImagePreview');
-
-    if (commentFileInput) {
-        commentFileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    previewImgContainer.style.display = 'block';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                clearCommentImagePreview();
-            }
-        });
-    }
-
-    function clearCommentImagePreview() {
-        if (commentFileInput) commentFileInput.value = '';
-        previewImg.src = '';
-        previewImgContainer.style.display = 'none';
     }
 </script>
 
