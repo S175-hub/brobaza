@@ -239,6 +239,77 @@
     .comment-like.is-liked { color: var(--like) !important; }
     .comment-like.is-liked .comment-like-count { color: var(--like) !important; }
 
+    .repost-mini-card {
+        position: relative;
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 10px;
+        background-color: transparent;
+        transition: background-color 200ms ease;
+    }
+
+    .repost-mini-card:hover {
+        background-color: var(--card-hover);
+    }
+
+    .repost-mini-card .feed-card-link {
+        border-radius: 12px;
+    }
+
+    .repost-mini-card .feed-card-date {
+        position: relative;
+        z-index: 2;
+    }
+
+    .feed-repost-btn {
+        position: relative;
+        z-index: 2;
+        text-decoration: none !important;
+        font-size: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        margin-top: 10px;
+        border-radius: 999px;
+        border: none;
+        background: none;
+        color: var(--text-soft) !important;
+        transition: background-color 200ms ease, color 200ms ease, box-shadow 200ms ease;
+        cursor: pointer;
+        outline: none;
+        box-shadow: none;
+        line-height: 1;
+    }
+    .feed-repost-btn i { font-size: 18px; line-height: 1; }
+    .feed-repost-count { color: var(--text-soft) !important; font-size: 14px; line-height: 1; transition: color 200ms ease; }
+    .feed-repost-btn:hover,
+    .feed-repost-btn:active,
+    .feed-repost-btn:focus {
+        background-color: var(--primary-soft) !important;
+        color: var(--primary) !important;
+        box-shadow: 0 0 0 3px var(--primary-soft) !important;
+        text-decoration: none !important;
+        outline: none !important;
+    }
+    .feed-repost-btn:hover .feed-repost-count,
+    .feed-repost-btn:active .feed-repost-count {
+        color: var(--primary) !important;
+    }
+
+    .feed-repost-btn.is-reposted {
+        color: var(--primary) !important;
+    }
+    .feed-repost-btn.is-reposted .feed-repost-count {
+        color: var(--primary) !important;
+    }
+    .feed-repost-btn.is-reposted:hover,
+    .feed-repost-btn.is-reposted:active,
+    .feed-repost-btn.is-reposted:focus {
+        background-color: var(--primary-soft) !important;
+        color: var(--primary) !important;
+    }
 </style>
 
 <div class="feed-layout">

@@ -1,32 +1,33 @@
-from flask import Blueprint, render_template, redirect
+from flask import Blueprint, abort, render_template, redirect
 from flask_login import login_required, current_user
 from data import db_session
 from data.posts import Posts
 from forms.add_post import AddPost
-from utils.feed import get_feed
+from utils.date import time_ago
 
-create_bp = Blueprint('create', __name__)
+repost_bp = Blueprint('repost', __name__)
 
 
-@create_bp.route('/create', methods=['GET', 'POST'])
+@repost_bp.route('/post/<int:post_id>/repost', methods=['GET', 'POST'])
 @login_required
-def create():
+def repost(post_id):
     form = AddPost()
 
     db_sess = db_session.create_session()
-    posts = get_feed(db_sess, current_user)
+    original_post = db_sess.get(Posts, post_id)
+    if not original_post:
+        abort(404)
 
+    original_post.pretty_date = time_ago(original_post.created_at)
+    
     if form.validate_on_submit():
         text = form.text.data
         file = form.image.data
 
-        if not text and (not file or not file.filename):
-            form.text.errors.append('Пост не может быть пустым')
-            return render_template('feed.html', form=form, posts=posts)
-
         post = Posts(
             author_id=current_user.id,
-            text=text
+            text=text,
+            repost_post_id=post_id,
         )
         db_sess.add(post)
         db_sess.flush()
@@ -39,4 +40,4 @@ def create():
 
         return redirect('/feed')
 
-    return render_template('feed.html', form=form, posts=posts)
+    return render_template('add_repost.html', form=form, original_post=original_post)

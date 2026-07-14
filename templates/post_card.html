@@ -3,110 +3,114 @@
     <a href="{{ url_for('post.post_view', post_id=post.id) }}" class="feed-card-link"></a>
 
     <div class="feed-card-header">
-
         <div class="feed-card-author">
-
             {% if post.author and post.author.username %}
             <a href="{{ url_for('profile.user_profile', username=post.author.username) }}">
-                <img src="{{ url_for('static', filename=post.author.avatar) }}"
-                     class="feed-card-avatar">
+                <img src="{{ url_for('static', filename=post.author.avatar) }}" class="feed-card-avatar">
             </a>
-
             <div>
-                <a href="{{ url_for('profile.user_profile', username=post.author.username) }}"
-                   class="feed-card-nickname">
+                <a href="{{ url_for('profile.user_profile', username=post.author.username) }}" class="feed-card-nickname">
                     <strong>{{ post.author.nickname }}</strong>
                 </a>
-
                 <div class="feed-card-date">
                     {{ post.pretty_date }}
                 </div>
             </div>
-
             {% else %}
-            <img src="{{ url_for('static', filename='default_avatar.png') }}"
-                 class="feed-card-avatar">
-
+            <img src="{{ url_for('static', filename='default_avatar.png') }}" class="feed-card-avatar">
             <div>
-                <span class="feed-card-nickname">
-                    <strong>Удалённый пользователь</strong>
-                </span>
-
-                <div class="feed-card-date">
-                    {{ post.pretty_date }}
-                </div>
+                <span class="feed-card-nickname"><strong>Удалённый пользователь</strong></span>
+                <div class="feed-card-date">{{ post.pretty_date }}</div>
             </div>
             {% endif %}
-
         </div>
 
         {% if current_user.is_authenticated and (post.author_id == current_user.id or current_user.role in ('admin', 'moderator')) %}
-
         <div class="feed-menu-wrap">
-
-            <button onclick="toggleMenu(event, {{ post.id }})"
-                    class="feed-menu-btn">
-                ⋯
-            </button>
-
-            <div id="menu-{{ post.id }}"
-                 class="feed-menu-dropdown">
-
+            <button onclick="toggleMenu(event, {{ post.id }})" class="feed-menu-btn">⋯</button>
+            <div id="menu-{{ post.id }}" class="feed-menu-dropdown">
                 {% if post.author_id == current_user.id %}
-                <a href="{{ url_for('post.post_edit', post_id=post.id, next=request.path) }}"
-                   class="feed-menu-edit">
-                    Редактировать
-                </a>
+                <a href="{{ url_for('post.post_edit', post_id=post.id, next=request.path) }}" class="feed-menu-edit">Редактировать</a>
                 {% endif %}
-
                 {% if post.author_id == current_user.id or current_user.role in ('admin', 'moderator') %}
-                <a href="{{ url_for('post.post_delete', post_id=post.id, next=request.path) }}"
-                   class="feed-menu-delete"
-                   style="color: {{ THEME.delete }};">
-                    Удалить
-                </a>
+                <a href="{{ url_for('post.post_delete', post_id=post.id, next=request.path) }}" class="feed-menu-delete" style="color: {{ THEME.delete }};">Удалить</a>
                 {% endif %}
-
             </div>
-
         </div>
-
         {% endif %}
 
     </div>
 
     {% if post.text %}
-    <p class="feed-card-text">
-        {{ post.text | safe }}
-    </p>
+    <p class="feed-card-text">{{ post.text | safe }}</p>
     {% endif %}
 
     {% if post.image %}
-    <img src="{{ url_for('static', filename=post.image) }}"
-         class="feed-card-image">
+    <img src="{{ url_for('static', filename=post.image) }}" class="feed-card-image">
+    {% endif %}
+
+    {% if post.repost_post_id and post.original_post %}
+        <div class="repost-mini-card">
+            <a href="{{ url_for('post.post_view', post_id=post.original_post.id) }}" class="feed-card-link"></a>
+
+            <div class="feed-card-header" style="margin-bottom: 0;">
+                <div class="feed-card-author">
+                    {% if post.original_post.author and post.original_post.author.username %}
+                    <a href="{{ url_for('profile.user_profile', username=post.original_post.author.username) }}">
+                        <img src="{{ url_for('static', filename=post.original_post.author.avatar) }}" class="feed-card-avatar">
+                    </a>
+                    <div>
+                        <a href="{{ url_for('profile.user_profile', username=post.original_post.author.username) }}" class="feed-card-nickname">
+                            <strong>{{ post.original_post.author.nickname }}</strong>
+                        </a>
+                        <div class="feed-card-date">
+                            {{ post.original_post.pretty_date }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <img src="{{ url_for('static', filename='default_avatar.png') }}" class="feed-card-avatar">
+                    <div>
+                        <span class="feed-card-nickname"><strong>Удалённый пользователь</strong></span>
+                        <div class="feed-card-date">{{ post.original_post.pretty_date }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if post.original_post.text %}
+            <p class="feed-card-text">{{ post.original_post.text | safe }}</p>
+            {% endif %}
+
+            {% if post.original_post.image %}
+            <img src="{{ url_for('static', filename=post.original_post.image) }}" class="feed-card-image">
+            {% endif %}
+        </div>
     {% endif %}
 
     <div style="display: flex; align-items: center; gap: 4px; position: relative; z-index: 2;">
+
         <button type="button"
            onclick="likePost({{ post.id }}, this)"
            class="feed-like {% if post.is_liked %}is-liked{% endif %}">
-
             {% if post.is_liked %}
                 {{ LIKE_ICON_FILLED | safe }}
             {% else %}
                 {{ LIKE_ICON_EMPTY | safe }}
             {% endif %}
-
-            <span class="feed-like-count">
-                {{ post.like_count }}
-            </span>
-
+            <span class="feed-like-count">{{ post.like_count }}</span>
         </button>
+
+        <a href="{{ url_for('repost.repost', post_id=post.id) }}"
+           class="feed-repost-btn {% if post.is_reposted %}is-reposted{% endif %}">
+            {{ REPOST_ICON | safe }}
+            <span class="feed-repost-count">{{ post.repost_count }}</span>
+        </a>
 
         <a href="{{ url_for('post.post_view', post_id=post.id) }}" class="feed-comment-btn">
             {{ COMMENT_ICON | safe }}
             <span class="feed-comment-count">{{ post.comment_count }}</span>
         </a>
+
     </div>
 
 </div>

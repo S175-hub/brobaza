@@ -17,9 +17,10 @@ from routes.profile import profile_bp
 from routes.profile_edit import profile_edit_bp
 from routes.profile_setup import profile_setup_bp
 from routes.register import register_bp
+from routes.repost import repost_bp
 from routes.settings import settings_bp
 from ui.emojis import EMOJI_LIST
-from ui.icons import LIKE_ICON_EMPTY, LIKE_ICON_FILLED, BACK_ICON, COMMENT_ICON
+from ui.icons import LIKE_ICON_EMPTY, LIKE_ICON_FILLED, BACK_ICON, COMMENT_ICON, REPOST_ICON
 from ui.menu import SIDEBAR_MENU
 from utils.theme import THEME_DARK, THEME_LIGHT
 
@@ -70,7 +71,8 @@ def inject_icons():
         LIKE_ICON_EMPTY=LIKE_ICON_EMPTY,
         LIKE_ICON_FILLED=LIKE_ICON_FILLED,
         BACK_ICON=BACK_ICON,
-        COMMENT_ICON=COMMENT_ICON
+        COMMENT_ICON=COMMENT_ICON,
+        REPOST_ICON=REPOST_ICON
     )
 
 
@@ -100,6 +102,7 @@ app.register_blueprint(settings_bp)
 app.register_blueprint(placeholder_bp)
 app.register_blueprint(api_bp)
 app.register_blueprint(comment_bp)
+app.register_blueprint(repost_bp)
 
 
 @app.errorhandler(404)

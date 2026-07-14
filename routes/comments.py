@@ -65,12 +65,11 @@ def delete_comment(comment_id):
         if not (comment.author_id == current_user.id or current_user.role in ('admin', 'moderator')):
             abort(403)
 
-        # Удаляем картинку комментария, если есть
         if comment.image:
             file_path = os.path.join(current_app.root_path, 'static', comment.image)
             if os.path.exists(file_path):
                 try:
-                    os.remove(file_path)  # Теперь os импортирован правильно
+                    os.remove(file_path)
                 except Exception:
                     pass
 
@@ -108,14 +107,12 @@ def edit_comment(comment_id):
             file = form.image.data
             delete_image = 'delete_image' in request.form
 
-            # Проверка на пустоту
             if not text and not (file and file.filename) and not (comment.image and not delete_image):
                 form.text.errors.append('Комментарий не может быть пустым')
                 return render_template('comment_edit.html', form=form, comment=comment)
 
             comment.text = text
 
-            # Обработка новой картинки
             if file and file.filename:
                 if comment.image:
                     old_path = os.path.join(current_app.root_path, 'static', comment.image)
@@ -126,7 +123,6 @@ def edit_comment(comment_id):
                 file.save(f'static/comments/{filename}')
                 comment.image = f'comments/{filename}'
 
-            # Обработка удаления старой картинки
             elif delete_image:
                 if comment.image:
                     old_path = os.path.join(current_app.root_path, 'static', comment.image)
